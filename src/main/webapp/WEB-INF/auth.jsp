@@ -12,6 +12,17 @@
     <title>Auth</title>
 </head>
 <body>
-    <h1>Authentification</h1>
+    <form class="container text-center" action="" method="post" style="width: 30%">
+        <h2 class="title">Connexion</h2>
+        <div class="form-floating mb-2">
+            <input type="login" class="form-control" id="login">
+            <label for="login">Login</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" class="form-control" id="password">
+            <label for="password">Mot de passe</label>
+        </div>
+        <button class="btn btn-primary" type="submit">Se connecter</button>
+    </form>
 </body>
 </html>

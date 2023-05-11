@@ -10,12 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ffb0f72c-71e1-4a61-bbca-c709dd2d06ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/css/bootstrap-icons.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/fonts/bootstrap-icons.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/fonts/bootstrap-icons.woff2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/auth.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/auth.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +54,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/rajaonson/lab/lpacsid-chat-web/src/main/webapp/WEB-INF/fonts",
+    "last_opened_file_path": "/Users/rajaonson/lab/java-projects/lpacsid-chat-web",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -189,7 +184,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1683759286949</updated>
-      <workItem from="1683759288238" duration="2301000" />
+      <workItem from="1683759288238" duration="4285000" />
+      <workItem from="1683797773502" duration="4404000" />
     </task>
     <servers />
   </component>
