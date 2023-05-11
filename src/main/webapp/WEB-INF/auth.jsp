@@ -12,17 +12,19 @@
     <title>Auth</title>
 </head>
 <body>
-    <form class="container text-center" action="" method="post" style="width: 30%">
+    <form class="container text-center" action="Auth" method="post" style="width: 30%">
         <h2 class="title">Connexion</h2>
         <div class="form-floating mb-2">
-            <input type="login" class="form-control" id="login">
+            <input type="login" class="form-control" id="login" required>
             <label for="login">Login</label>
         </div>
         <div class="form-floating mb-2">
-            <input type="password" class="form-control" id="password">
+            <input type="password" class="form-control" id="password" required>
             <label for="password">Mot de passe</label>
         </div>
-        <button class="btn btn-primary" type="submit">Se connecter</button>
+        <button class="btn btn-primary" type="submit" name="auth">
+            Se connecter
+        </button>
     </form>
 </body>
 </html>

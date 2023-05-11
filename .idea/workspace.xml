@@ -10,8 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ffb0f72c-71e1-4a61-bbca-c709dd2d06ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/lpacsid/chat/Home.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/home.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/lpacsid/chat/Auth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/lpacsid/chat/Auth.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/auth.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/auth.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Jsp File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -185,7 +189,7 @@
       <option name="presentableId" value="Default" />
       <updated>1683759286949</updated>
       <workItem from="1683759288238" duration="4285000" />
-      <workItem from="1683797773502" duration="4404000" />
+      <workItem from="1683797773502" duration="5265000" />
     </task>
     <servers />
   </component>
