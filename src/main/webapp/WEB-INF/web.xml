@@ -10,14 +10,14 @@
     <servlet-name>Auth</servlet-name>
     <servlet-class>fr.lpacsid.chat.Auth</servlet-class>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>Auth</servlet-name>
-    <url-pattern>/Auth</url-pattern>
-  </servlet-mapping>
   <servlet>
     <servlet-name>Home</servlet-name>
     <servlet-class>fr.lpacsid.chat.Home</servlet-class>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>Auth</servlet-name>
+    <url-pattern>/Auth</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Home</servlet-name>
     <url-pattern>/Home</url-pattern>

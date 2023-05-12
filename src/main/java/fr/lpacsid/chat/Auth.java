@@ -33,13 +33,15 @@ public class Auth extends HttpServlet {
             boolean canConnect = true;
 
             if (canConnect) {
-                dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
+                response.sendRedirect("Home");
             } else {
                 dispatcher = contexte.getRequestDispatcher("/WEB-INF/auth.jsp");
             }
         } else {
             dispatcher = contexte.getRequestDispatcher("/WEB-INF/auth.jsp");
         }
-        dispatcher.forward(request, response);
+        if (dispatcher != null) {
+            dispatcher.forward(request, response);
+        }
     }
 }
