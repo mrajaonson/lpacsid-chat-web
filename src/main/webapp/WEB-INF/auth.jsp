@@ -15,11 +15,11 @@
     <form class="container text-center" action="Auth" method="post" style="width: 30%">
         <h2 class="title">Connexion</h2>
         <div class="form-floating mb-2">
-            <input type="login" class="form-control" id="login" required>
+            <input type="login" class="form-control" id="login" name="login" required>
             <label for="login">Login</label>
         </div>
         <div class="form-floating mb-2">
-            <input type="password" class="form-control" id="password" required>
+            <input type="password" class="form-control" id="password" name="password" required>
             <label for="password">Mot de passe</label>
         </div>
         <button class="btn btn-primary" type="submit" name="auth">

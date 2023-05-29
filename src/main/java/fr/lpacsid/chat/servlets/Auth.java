@@ -1,5 +1,6 @@
-package fr.lpacsid.chat;
+package fr.lpacsid.chat.servlets;
 
+import fr.lpacsid.chat.db.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Auth extends HttpServlet {
 
@@ -30,7 +34,13 @@ public class Auth extends HttpServlet {
             String login = request.getParameter("login");
             String password = request.getParameter("password");
 
-            boolean canConnect = true;
+            UserDB userDB = new UserDB();
+            boolean canConnect = false;
+            try {
+                canConnect = userDB.validateUser(login, password);
+            } catch (SQLException e) {
+                Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
+            }
 
             if (canConnect) {
                 response.sendRedirect("Home");

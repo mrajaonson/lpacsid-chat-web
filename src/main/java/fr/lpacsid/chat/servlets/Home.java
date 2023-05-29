@@ -1,4 +1,4 @@
-package fr.lpacsid.chat;
+package fr.lpacsid.chat.servlets;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

@@ -8,11 +8,11 @@
   </welcome-file-list>
   <servlet>
     <servlet-name>Auth</servlet-name>
-    <servlet-class>fr.lpacsid.chat.Auth</servlet-class>
+    <servlet-class>fr.lpacsid.chat.servlets.Auth</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>Home</servlet-name>
-    <servlet-class>fr.lpacsid.chat.Home</servlet-class>
+    <servlet-class>fr.lpacsid.chat.servlets.Home</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Auth</servlet-name>
