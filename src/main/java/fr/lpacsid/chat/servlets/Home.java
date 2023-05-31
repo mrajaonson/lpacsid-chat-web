@@ -1,5 +1,7 @@
 package fr.lpacsid.chat.servlets;
 
+import fr.lpacsid.chat.beans.Chat;
+import fr.lpacsid.chat.beans.Participant;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.db.UserDB;
 import jakarta.servlet.RequestDispatcher;
@@ -37,6 +39,9 @@ public class Home extends HttpServlet {
             UserDB userDB = new UserDB();
             try {
                 User userDBSearch = userDB.readUser(userSearch);
+                Participant p1 = new Participant(userDBSearch.getId(), userDBSearch.getLogin());
+                Chat chat = new Chat();
+                chat.addParticipant(p1);
                 System.out.println("NEW " + userDBSearch.getLogin());
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
