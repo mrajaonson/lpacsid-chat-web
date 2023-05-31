@@ -1,12 +1,19 @@
 package fr.lpacsid.chat.servlets;
 
+import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.db.UserDB;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Home extends HttpServlet {
 
@@ -18,6 +25,25 @@ public class Home extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        HttpSession session = request.getSession();
+        ServletContext contexte = getServletContext();
+        RequestDispatcher dispatcher = null;
+
+        // Add contact form
+        String addContactForm = request.getParameter("addContact");
+        if (addContactForm != null) {
+            String userSearch = request.getParameter("userSearch");
+
+            UserDB userDB = new UserDB();
+            try {
+                User userDBSearch = userDB.readUser(userSearch);
+                System.out.println("NEW " + userDBSearch.getLogin());
+            } catch (SQLException e) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
+            }
+
+        }
+        dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
+        dispatcher.forward(request, response);
     }
 }

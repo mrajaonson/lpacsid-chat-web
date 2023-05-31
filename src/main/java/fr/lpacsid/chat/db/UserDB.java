@@ -25,7 +25,6 @@ public class UserDB {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
-//            throw new RuntimeException(e);
         } finally {
             if (connection != null) {
                 connection.close();
@@ -33,7 +32,35 @@ public class UserDB {
         }
     }
 
-    public User readUser(String login, String password) throws SQLException {
+    public User readUser(String login) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            ConnectDB connectDB = new ConnectDB();
+            connection = connectDB.getConnection();
+            String query = "SELECT * FROM users WHERE login = ?";
+            preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, login);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return new User(login);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return null;
+    }
+
+    public boolean validateUser(String login, String password) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -47,11 +74,10 @@ public class UserDB {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return new User(login);
+                return true;
             }
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
-//            throw new RuntimeException(e);
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();
@@ -60,10 +86,6 @@ public class UserDB {
                 connection.close();
             }
         }
-        return null;
-    }
-
-    public boolean validateUser(String login, String password) throws SQLException {
-        return readUser(login, password) != null;
+        return false;
     }
 }

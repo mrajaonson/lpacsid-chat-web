@@ -15,7 +15,7 @@
     <form class="container text-center" action="Auth" method="post" style="width: 30%">
         <h2 class="title">Connexion</h2>
         <div class="form-floating mb-2">
-            <input type="login" class="form-control" id="login" name="login" required>
+            <input type="text" class="form-control" id="login" name="login" required>
             <label for="login">Login</label>
         </div>
         <div class="form-floating mb-2">

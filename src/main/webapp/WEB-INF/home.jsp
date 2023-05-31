@@ -7,9 +7,15 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <style><jsp:include page="../css/bootstrap.min.css" /></style>
-    <style><jsp:include page="../css/bootstrap-icons.css" /></style>
-    <script><jsp:include page="../js/bootstrap.bundle.min.js" /></script>
+    <style>
+        <jsp:include page="../css/bootstrap.min.css"/>
+    </style>
+    <style>
+        <jsp:include page="../css/bootstrap-icons.css"/>
+    </style>
+    <script>
+        <jsp:include page="../js/bootstrap.bundle.min.js"/>
+    </script>
     <title>Home</title>
 </head>
 <body>
@@ -18,24 +24,29 @@
         <div class="col-2 h-100" style="background-color: #4d5154">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Ajouter un contact
+                Créer une discussion
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Rechercher un utilisateur</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button type="button" class="btn btn-primary">Ajouter</button>
-                        </div>
+                        <form action="Home" method="POST">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Créer une discussion</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" class="form-control" id="userSearch" name="userSearch"
+                                       placeholder="Saisir un nom d'utilisateur">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" name="addContact" class="btn btn-primary">Ajouter</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
