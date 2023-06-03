@@ -18,8 +18,16 @@ public class Auth extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
         ServletContext context = getServletContext();
-        context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
+
+        String userSession = (String) session.getAttribute("user");
+
+        if (userSession != null) {
+            response.sendRedirect("Home");
+        } else {
+            context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -43,6 +51,7 @@ public class Auth extends HttpServlet {
             }
 
             if (canConnect) {
+                session.setAttribute("user", login);
                 response.sendRedirect("Home");
             } else {
                 dispatcher = contexte.getRequestDispatcher("/WEB-INF/auth.jsp");

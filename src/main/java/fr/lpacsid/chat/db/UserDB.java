@@ -1,5 +1,6 @@
 package fr.lpacsid.chat.db;
 
+import fr.lpacsid.chat.UserStatus;
 import fr.lpacsid.chat.beans.User;
 
 import java.sql.Connection;
@@ -45,7 +46,43 @@ public class UserDB {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return new User(login);
+                Integer id = resultSet.getInt("id");
+                String creationDate = resultSet.getString("creationDate");
+                String status = resultSet.getString("status");
+                String lastConnection = resultSet.getString("lastConnection");
+                return new User(id, login, creationDate, status, lastConnection);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return null;
+    }
+
+    public User readUserById(Integer id) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            ConnectDB connectDB = new ConnectDB();
+            connection = connectDB.getConnection();
+            String query = "SELECT * FROM users WHERE id = ?";
+            preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String login = resultSet.getString("login");
+                String creationDate = resultSet.getString("creationDate");
+                String status = resultSet.getString("status");
+                String lastConnection = resultSet.getString("lastConnection");
+                return new User(id, login, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
