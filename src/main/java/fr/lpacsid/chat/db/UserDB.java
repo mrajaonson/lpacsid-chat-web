@@ -1,6 +1,5 @@
 package fr.lpacsid.chat.db;
 
-import fr.lpacsid.chat.UserStatus;
 import fr.lpacsid.chat.beans.User;
 
 import java.sql.Connection;
@@ -11,40 +10,49 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UserDB {
+
+    private Connection connection;
+    private PreparedStatement preparedStatement;
+    private String query;
+
+    private void getConnection() throws SQLException {
+        ConnectDB connectDB = new ConnectDB();
+        this.connection = connectDB.getConnection();
+    }
+
+    private void closeConnection() throws SQLException {
+        this.preparedStatement.close();
+        this.connection.close();
+    }
+
+    public UserDB() {}
+
     public void createUser(User user) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         try {
-            ConnectDB connectDB = new ConnectDB();
-            connection = connectDB.getConnection();
-            String query = "INSERT INTO users(login, password) VALUES(?, ?)";
-            preparedStatement = connection.prepareStatement(query);
+            this.getConnection();
+            this.query = "INSERT INTO users(login, password) VALUES(?, ?)";
+            this.preparedStatement = this.connection.prepareStatement(this.query);
 
-            preparedStatement.setString(1, user.getLogin());
-            preparedStatement.setString(2, user.getPassword());
+            this.preparedStatement.setString(1, user.getLogin());
+            this.preparedStatement.setString(2, user.getPassword());
 
-            preparedStatement.executeUpdate();
+            this.preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            if (connection != null) {
-                connection.close();
-            }
+            this.closeConnection();
         }
     }
 
     public User readUser(String login) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         try {
-            ConnectDB connectDB = new ConnectDB();
-            connection = connectDB.getConnection();
-            String query = "SELECT * FROM users WHERE login = ?";
-            preparedStatement = connection.prepareStatement(query);
+            this.getConnection();
+            this.query = "SELECT * FROM users WHERE login = ?";
+            this.preparedStatement = this.connection.prepareStatement(this.query);
 
-            preparedStatement.setString(1, login);
+            this.preparedStatement.setString(1, login);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = this.preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Integer id = resultSet.getInt("id");
                 String creationDate = resultSet.getString("creationDate");
@@ -55,28 +63,20 @@ public class UserDB {
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
+            this.closeConnection();
         }
         return null;
     }
 
     public User readUserById(Integer id) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         try {
-            ConnectDB connectDB = new ConnectDB();
-            connection = connectDB.getConnection();
-            String query = "SELECT * FROM users WHERE id = ?";
-            preparedStatement = connection.prepareStatement(query);
+            this.getConnection();
+            this.query = "SELECT * FROM users WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(this.query);
 
-            preparedStatement.setInt(1, id);
+            this.preparedStatement.setInt(1, id);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = this.preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String login = resultSet.getString("login");
                 String creationDate = resultSet.getString("creationDate");
@@ -87,41 +87,28 @@ public class UserDB {
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
+            this.closeConnection();
         }
         return null;
     }
 
     public boolean validateUser(String login, String password) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         try {
-            ConnectDB connectDB = new ConnectDB();
-            connection = connectDB.getConnection();
-            String query = "SELECT * FROM users WHERE login = ? AND password = ?";
-            preparedStatement = connection.prepareStatement(query);
+            this.getConnection();
+            this.query = "SELECT * FROM users WHERE login = ? AND password = ?";
+            this.preparedStatement = this.connection.prepareStatement(this.query);
 
-            preparedStatement.setString(1, login);
-            preparedStatement.setString(2, password);
+            this.preparedStatement.setString(1, login);
+            this.preparedStatement.setString(2, password);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = this.preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return true;
             }
         } catch (SQLException e) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
         } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
+            this.closeConnection();
         }
         return false;
     }
