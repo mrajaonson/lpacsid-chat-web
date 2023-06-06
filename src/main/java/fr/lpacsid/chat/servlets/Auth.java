@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.servlets;
 
-import fr.lpacsid.chat.db.UserDB;
+import fr.lpacsid.chat.dao.DaoFactory;
+import fr.lpacsid.chat.dao.UserDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Auth extends HttpServlet {
+
+    private UserDao userDao;
+
+    @Override
+    public void init() {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.userDao = daoFactory.getUserDao();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,10 +51,9 @@ public class Auth extends HttpServlet {
             String login = request.getParameter("login");
             String password = request.getParameter("password");
 
-            UserDB userDB = new UserDB();
             boolean canConnect = false;
             try {
-                canConnect = userDB.validateUser(login, password);
+                canConnect = userDao.validateUser(login, password);
             } catch (SQLException e) {
                 Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
             }

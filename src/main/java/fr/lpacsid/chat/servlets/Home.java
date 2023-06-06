@@ -2,8 +2,9 @@ package fr.lpacsid.chat.servlets;
 
 import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.User;
-import fr.lpacsid.chat.db.ConversationDB;
-import fr.lpacsid.chat.db.UserDB;
+import fr.lpacsid.chat.dao.ConversationDao;
+import fr.lpacsid.chat.dao.DaoFactory;
+import fr.lpacsid.chat.dao.UserDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -20,20 +21,28 @@ import java.util.logging.Logger;
 
 public class Home extends HttpServlet {
 
+    private UserDao userDao;
+    private ConversationDao conversationDao;
+
+    @Override
+    public void init() {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.userDao = daoFactory.getUserDao();
+        this.conversationDao = daoFactory.getConversationDao();
+    }
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         ServletContext context = getServletContext();
 
         String userSession = (String) session.getAttribute("user");
-        UserDB userDB = new UserDB();
         User u1;
         ArrayList<Conversation> conversations;
         try {
-            u1 = userDB.readUser(userSession);
+            u1 = userDao.readUser(userSession);
             // Récupération des conversations du user
-            ConversationDB conversationDB = new ConversationDB();
-            conversations = conversationDB.readAllUserConversations(u1.getLogin());
+            conversations = conversationDao.readAllUserConversations(u1.getLogin());
             session.setAttribute("userConversations", conversations);
         } catch (SQLException e) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
@@ -49,10 +58,9 @@ public class Home extends HttpServlet {
         RequestDispatcher dispatcher;
 
         String userSession = (String) session.getAttribute("user");
-        UserDB userDB = new UserDB();
         User u1 = null;
         try {
-            u1 = userDB.readUser(userSession);
+            u1 = userDao.readUser(userSession);
         } catch (SQLException e) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -63,12 +71,11 @@ public class Home extends HttpServlet {
             String userSearch = request.getParameter("userSearch");
 
             try {
-                User u2 = userDB.readUser(userSearch);
+                User u2 = userDao.readUser(userSearch);
 
                 Conversation conversation = new Conversation(u1, u2);
 
-                ConversationDB conversationDB = new ConversationDB();
-                conversationDB.createConversation(conversation);
+                conversationDao.createConversation(conversation);
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
             }

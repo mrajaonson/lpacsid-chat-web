@@ -1,4 +1,4 @@
-package fr.lpacsid.chat.db;
+package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.User;
@@ -11,15 +11,18 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ConversationDB {
+public class ConversationDaoImpl implements ConversationDao {
 
+    private final DaoFactory daoFactory;
     private Connection connection;
     private PreparedStatement preparedStatement;
-    private String query;
+
+    public ConversationDaoImpl(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
 
     private void getConnection() throws SQLException {
-        ConnectDB connectDB = new ConnectDB();
-        this.connection = connectDB.getConnection();
+        this.connection = this.daoFactory.getConnection();
     }
 
     private void closeConnection() throws SQLException {
@@ -27,11 +30,12 @@ public class ConversationDB {
         this.connection.close();
     }
 
+    @Override
     public void createConversation(Conversation conversation) throws SQLException {
         try {
             this.getConnection();
-            this.query = "INSERT INTO conversations(user1, user2, creationDate) VALUES(?, ?, ?)";
-            this.preparedStatement = this.connection.prepareStatement(this.query);
+            String query = "INSERT INTO conversations(user1, user2, creationDate) VALUES(?, ?, ?)";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, conversation.getUserIdByIndex(0));
             this.preparedStatement.setInt(2, conversation.getUserIdByIndex(1));
@@ -39,22 +43,38 @@ public class ConversationDB {
 
             this.preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             this.closeConnection();
         }
     }
 
+    @Override
+    public void readConversation(Integer id) throws SQLException {
+
+    }
+
+    @Override
+    public void updateConversation(Integer id) throws SQLException {
+
+    }
+
+    @Override
+    public void deleteConversation(Integer id) throws SQLException {
+
+    }
+
+    @Override
     public ArrayList<Conversation> readAllUserConversations(String username) throws SQLException {
         try {
             this.getConnection();
             ArrayList<Conversation> conversations = new ArrayList<>();
 
-            this.query = "SELECT * FROM conversations WHERE user1 = ? OR user2 = ?";
-            this.preparedStatement = this.connection.prepareStatement(this.query);
+            String query = "SELECT * FROM conversations WHERE user1 = ? OR user2 = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
-            UserDB userDB = new UserDB();
-            User user = userDB.readUser(username);
+            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
+            User user = userDao.readUser(username);
 
             this.preparedStatement.setInt(1, user.getId());
             this.preparedStatement.setInt(2, user.getId());
@@ -65,18 +85,17 @@ public class ConversationDB {
                 Integer id_u2 = resultSet.getInt("user2");
                 String creationDate = resultSet.getString("creationDate");
 
-                User u1 = userDB.readUserById(id_u1);
-                User u2 = userDB.readUserById(id_u2);
+                User u1 = userDao.readUserById(id_u1);
+                User u2 = userDao.readUserById(id_u2);
 
                 conversations.add(new Conversation(u1, u2, creationDate));
             }
             return conversations;
         } catch (SQLException e) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             this.closeConnection();
         }
         return null;
     }
-
 }
