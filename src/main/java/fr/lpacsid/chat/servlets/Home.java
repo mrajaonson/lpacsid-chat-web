@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +38,7 @@ public class Home extends HttpServlet {
 
         String userSession = (String) session.getAttribute("user");
         User u1;
-        ArrayList<Conversation> conversations;
+        List<Conversation> conversations;
         try {
             u1 = userDao.readUser(userSession);
             // Récupération des conversations du user

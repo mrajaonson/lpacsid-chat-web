@@ -3,7 +3,7 @@ package fr.lpacsid.chat.dao;
 import fr.lpacsid.chat.beans.Conversation;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ConversationDao {
     void createConversation(Conversation conversation) throws SQLException;
@@ -14,5 +14,5 @@ public interface ConversationDao {
 
     void deleteConversation(Integer id) throws SQLException;
 
-    ArrayList<Conversation> readAllUserConversations(String username) throws SQLException;
+    List<Conversation> readAllUserConversations(String username) throws SQLException;
 }

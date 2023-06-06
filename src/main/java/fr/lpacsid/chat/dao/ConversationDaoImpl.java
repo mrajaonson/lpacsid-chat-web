@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,10 +66,10 @@ public class ConversationDaoImpl implements ConversationDao {
     }
 
     @Override
-    public ArrayList<Conversation> readAllUserConversations(String username) throws SQLException {
+    public List<Conversation> readAllUserConversations(String username) throws SQLException {
         try {
             this.getConnection();
-            ArrayList<Conversation> conversations = new ArrayList<>();
+            List<Conversation> conversations = new ArrayList<>();
 
             String query = "SELECT * FROM conversations WHERE user1 = ? OR user2 = ?";
             this.preparedStatement = this.connection.prepareStatement(query);

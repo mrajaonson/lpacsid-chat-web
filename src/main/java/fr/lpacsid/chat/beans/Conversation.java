@@ -2,10 +2,11 @@ package fr.lpacsid.chat.beans;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Conversation {
     private Integer id;
-    private ArrayList<User> users;
+    private List<User> users;
 
     private String creationDate;
 
@@ -17,11 +18,11 @@ public class Conversation {
         this.id = id;
     }
 
-    public ArrayList<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
