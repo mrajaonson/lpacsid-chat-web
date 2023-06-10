@@ -44,7 +44,8 @@ public class Conversation {
         this.initCreationDate();
     }
 
-    public Conversation(User u1, User u2, String creationDate) {
+    public Conversation(Integer id, User u1, User u2, String creationDate) {
+        this.id = id;
         this.users = new ArrayList<>();
         this.creationDate = creationDate;
         this.addUser(u1);

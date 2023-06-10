@@ -81,6 +81,21 @@ public class Home extends HttpServlet {
             }
 
         }
+
+        // Display conversation form
+        String currentConversation = request.getParameter("setCurrentConversationId");
+        if (currentConversation != null) {
+            int currentConversationId = Integer.parseInt(currentConversation);
+            session.setAttribute("currentConversationId", currentConversationId);
+            Conversation currentConversationObj;
+            try {
+                currentConversationObj = conversationDao.readConversation(currentConversationId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            session.setAttribute("currentConversationObj", currentConversationObj);
+        }
+
         dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
         dispatcher.forward(request, response);
     }

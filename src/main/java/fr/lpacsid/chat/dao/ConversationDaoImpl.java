@@ -51,8 +51,34 @@ public class ConversationDaoImpl implements ConversationDao {
     }
 
     @Override
-    public void readConversation(Integer id) throws SQLException {
+    public Conversation readConversation(Integer id) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "SELECT * FROM conversations WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
+            this.preparedStatement.setInt(1, id);
+
+            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
+
+            ResultSet resultSet = this.preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Integer id_u1 = resultSet.getInt("user1");
+                Integer id_u2 = resultSet.getInt("user2");
+                String creationDate = resultSet.getString("creationDate");
+
+                User u1 = userDao.readUserById(id_u1);
+                User u2 = userDao.readUserById(id_u2);
+
+                return new Conversation(id, u1, u2, creationDate);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            this.closeConnection();
+        }
+        return null;
     }
 
     @Override
@@ -82,6 +108,7 @@ public class ConversationDaoImpl implements ConversationDao {
 
             ResultSet resultSet = this.preparedStatement.executeQuery();
             while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
                 Integer id_u1 = resultSet.getInt("user1");
                 Integer id_u2 = resultSet.getInt("user2");
                 String creationDate = resultSet.getString("creationDate");
@@ -89,7 +116,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 User u1 = userDao.readUserById(id_u1);
                 User u2 = userDao.readUserById(id_u2);
 
-                conversations.add(new Conversation(u1, u2, creationDate));
+                conversations.add(new Conversation(id, u1, u2, creationDate));
             }
             return conversations;
         } catch (SQLException e) {

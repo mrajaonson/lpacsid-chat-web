@@ -8,7 +8,7 @@ import java.util.List;
 public interface ConversationDao {
     void createConversation(Conversation conversation) throws SQLException;
 
-    void readConversation(Integer id) throws SQLException;
+    Conversation readConversation(Integer id) throws SQLException;
 
     void updateConversation(Integer id) throws SQLException;
 

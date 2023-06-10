@@ -54,11 +54,28 @@
                 assert conversations != null;
                 for (Conversation conversation : conversations) {
             %>
-                <button type="button" class="btn"><%= conversation.getContactName(username) %></button>
+                <form action="Home" method="post">
+                    <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
+                    <button type="submit" class="btn" name="setCurrentConversationId"><%= conversation.getContactName(username) %></button>
+                </form>
             <% } %>
             </ul>
         </div>
-        <div class="col h-100" style="background-color: #5c636a">
+        <div class="col h-100 text-center" style="background-color: #5c636a">
+            <div class="">
+                <%
+                    Conversation currentConversationObj = (Conversation) request.getSession().getAttribute("currentConversationObj");
+                %>
+                <h2><%= currentConversationObj.getContactName(username) %></h2>
+            </div>
+            <div class="content">
+                Messages
+            </div>
+            <div style="position: absolute; bottom: 0; width: 50%">
+                <form action="Home" method="post">
+                    <input class="form-control" type="text" value="Saisie...">
+                </form>
+            </div>
         </div>
     </div>
 </div>
