@@ -3,19 +3,13 @@
   Date: 12/05/2023
   Time: 00:26
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <style>
-        <jsp:include page="../css/bootstrap.min.css"/>
-    </style>
-    <style>
-        <jsp:include page="../css/bootstrap-icons.css"/>
-    </style>
-    <script>
-        <jsp:include page="../js/bootstrap.bundle.min.js"/>
-    </script>
+    <style><jsp:include page="../css/bootstrap.min.css"/></style>
+    <style><jsp:include page="../css/bootstrap-icons.css"/></style>
+    <script><jsp:include page="../js/bootstrap.bundle.min.js"/></script>
     <title>Home</title>
 </head>
 <body>
