@@ -4,6 +4,8 @@
   Time: 00:26
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="fr.lpacsid.chat.beans.Conversation" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -44,6 +46,17 @@
                     </div>
                 </div>
             </div>
+            <%-- Liste des conversations --%>
+            <ul class="list-group list-group-flush">
+            <%
+                List<Conversation> conversations = (List<Conversation>) request.getSession().getAttribute("userConversations");
+                String username = request.getSession().getAttribute("user").toString();
+                assert conversations != null;
+                for (Conversation conversation : conversations) {
+            %>
+                <button type="button" class="btn"><%= conversation.getContactName(username) %></button>
+            <% } %>
+            </ul>
         </div>
         <div class="col h-100" style="background-color: #5c636a">
         </div>

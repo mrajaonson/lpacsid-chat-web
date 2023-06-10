@@ -3,6 +3,7 @@ package fr.lpacsid.chat.beans;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Conversation {
     private Integer id;
@@ -67,5 +68,14 @@ public class Conversation {
 
     public String getUserNameByIndex(Integer i) {
         return this.users.get(i).getLogin();
+    }
+
+    public String getContactName(String username) {
+        for (User user : this.getUsers()) {
+            if (!Objects.equals(user.getLogin(), username)) {
+                return user.getLogin();
+            }
+        }
+        return null;
     }
 }
