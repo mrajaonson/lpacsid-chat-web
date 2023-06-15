@@ -63,7 +63,7 @@
             </ul>
         </div>
         <%-- Affichage messages --%>
-        <div class="col h-100 text-center" style="background-color: #5c636a">
+        <div class="col h-100" style="background-color: #5c636a">
             <div class="">
                 <%
                     Conversation currentConversationObj = (Conversation) request.getSession().getAttribute("currentConversationObj");
@@ -71,14 +71,22 @@
                 %>
                 <h2><%= currentConversationObj.getContactName(username) %></h2>
             </div>
-            <div class="content">
-                <% for (Message currentConversationMessage : currentConversationMessages) { %>
-                    <p><%= currentConversationMessage.getContent() %></p>
-                <% } %>
+            <div class="container text-center" style="width: 100%; height: 90%; overflow: auto">
+                <div class="row">
+                    <% for (Message currentConversationMessage : currentConversationMessages) { %>
+                    <div>
+                        <div class="card text-bg-primary mb-3 w-25">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= currentConversationMessage.getSender() %></h5>
+                                <p class="card-text"><%= currentConversationMessage.getContent() %></p>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
             </div>
             <div style="position: absolute; bottom: 0; width: 50%">
                 <form action="Home" method="post">
-<%--                    <input class="form-control" type="text" value="Saisie...">--%>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="messageInput" name="messageInput" placeholder="Message">
                         <button class="btn btn-outline-secondary" type="submit" name="sendMessage">Envoyer</button>
