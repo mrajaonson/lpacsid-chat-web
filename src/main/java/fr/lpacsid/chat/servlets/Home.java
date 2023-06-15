@@ -1,9 +1,11 @@
 package fr.lpacsid.chat.servlets;
 
 import fr.lpacsid.chat.beans.Conversation;
+import fr.lpacsid.chat.beans.Message;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
+import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -23,12 +25,14 @@ public class Home extends HttpServlet {
 
     private UserDao userDao;
     private ConversationDao conversationDao;
+    private MessageDao messageDao;
 
     @Override
     public void init() {
         DaoFactory daoFactory = DaoFactory.getInstance();
         this.userDao = daoFactory.getUserDao();
         this.conversationDao = daoFactory.getConversationDao();
+        this.messageDao = daoFactory.getMessageDao();
     }
 
     @Override
@@ -69,17 +73,13 @@ public class Home extends HttpServlet {
         String addContactForm = request.getParameter("addContact");
         if (addContactForm != null) {
             String userSearch = request.getParameter("userSearch");
-
             try {
                 User u2 = userDao.readUser(userSearch);
-
                 Conversation conversation = new Conversation(u1, u2);
-
                 conversationDao.createConversation(conversation);
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
             }
-
         }
 
         // Display conversation form
@@ -88,12 +88,32 @@ public class Home extends HttpServlet {
             int currentConversationId = Integer.parseInt(currentConversation);
             session.setAttribute("currentConversationId", currentConversationId);
             Conversation currentConversationObj;
+            List<Message> currentConversationMessages;
             try {
                 currentConversationObj = conversationDao.readConversation(currentConversationId);
+                currentConversationMessages = messageDao.readAllConversationMessages(currentConversationId);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
             session.setAttribute("currentConversationObj", currentConversationObj);
+            session.setAttribute("currentConversationMessages", currentConversationMessages);
+        }
+
+        // Send message
+        String sendMessage = request.getParameter("sendMessage");
+        if (sendMessage != null) {
+            String messageInput = request.getParameter("messageInput");
+            Conversation currentConversationObj = (Conversation) session.getAttribute("currentConversationObj");
+            assert u1 != null;
+            Message message = new Message(currentConversationObj.getId(), u1.getId(), messageInput);
+            List<Message> currentConversationMessages;
+            try {
+                messageDao.createMessage(message);
+                currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            session.setAttribute("currentConversationMessages", currentConversationMessages);
         }
 
         dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");

@@ -27,8 +27,12 @@ public class ConversationDaoImpl implements ConversationDao {
     }
 
     private void closeConnection() throws SQLException {
-        this.preparedStatement.close();
-        this.connection.close();
+        if (this.preparedStatement != null) {
+            this.preparedStatement.close();
+        }
+        if (this.connection != null) {
+            this.connection.close();
+        }
     }
 
     @Override

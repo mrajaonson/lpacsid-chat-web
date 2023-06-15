@@ -21,3 +21,12 @@ CREATE TABLE `chat`.`conversations` (
     `creationDate` VARCHAR(50) NOT NULL ,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+
+CREATE TABLE `chat`.`messages` (
+    `id` INT NOT NULL AUTO_INCREMENT ,
+    `conversation` INT NOT NULL ,
+    `sender` INT NOT NULL ,
+    `dateSent` VARCHAR(50) NOT NULL ,
+    `content` VARCHAR(10000) NOT NULL ,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;

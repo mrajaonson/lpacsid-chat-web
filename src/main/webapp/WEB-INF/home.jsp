@@ -6,6 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="fr.lpacsid.chat.beans.Conversation" %>
+<%@ page import="fr.lpacsid.chat.beans.Message" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -61,19 +62,27 @@
             <% } %>
             </ul>
         </div>
+        <%-- Affichage messages --%>
         <div class="col h-100 text-center" style="background-color: #5c636a">
             <div class="">
                 <%
                     Conversation currentConversationObj = (Conversation) request.getSession().getAttribute("currentConversationObj");
+                    List<Message> currentConversationMessages = (List<Message>) request.getSession().getAttribute("currentConversationMessages");
                 %>
                 <h2><%= currentConversationObj.getContactName(username) %></h2>
             </div>
             <div class="content">
-                Messages
+                <% for (Message currentConversationMessage : currentConversationMessages) { %>
+                    <p><%= currentConversationMessage.getContent() %></p>
+                <% } %>
             </div>
             <div style="position: absolute; bottom: 0; width: 50%">
                 <form action="Home" method="post">
-                    <input class="form-control" type="text" value="Saisie...">
+<%--                    <input class="form-control" type="text" value="Saisie...">--%>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="messageInput" name="messageInput" placeholder="Message">
+                        <button class="btn btn-outline-secondary" type="submit" name="sendMessage">Envoyer</button>
+                    </div>
                 </form>
             </div>
         </div>

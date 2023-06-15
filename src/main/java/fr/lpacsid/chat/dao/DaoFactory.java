@@ -40,4 +40,8 @@ public class DaoFactory {
     public ConversationDao getConversationDao() {
         return new ConversationDaoImpl(this);
     }
+
+    public MessageDao getMessageDao() {
+        return new MessageDaoImpl(this);
+    }
 }
