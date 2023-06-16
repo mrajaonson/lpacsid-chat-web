@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.Message;
+import fr.lpacsid.chat.beans.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -105,6 +106,8 @@ public class MessageDaoImpl implements MessageDao {
 
             this.preparedStatement.setInt(1, conversation);
 
+            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
+
             ResultSet resultSet = this.preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -112,7 +115,11 @@ public class MessageDaoImpl implements MessageDao {
                 String dateSent = resultSet.getString("dateSent");
                 String content = resultSet.getString("content");
 
-                messages.add(new Message(conversation, sender, dateSent, content));
+                User user = userDao.readUserById(sender);
+                Message message = new Message(conversation, sender, dateSent, content);
+                message.setSenderName(user.getLogin());
+
+                messages.add(message);
             }
 
             return messages;

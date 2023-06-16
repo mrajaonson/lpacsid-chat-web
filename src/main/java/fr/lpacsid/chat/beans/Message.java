@@ -3,11 +3,12 @@ package fr.lpacsid.chat.beans;
 import java.time.LocalDateTime;
 
 public class Message {
-    Integer id;
-    Integer conversation;
-    Integer sender;
-    String dateSent;
-    String content;
+    private Integer id;
+    private Integer conversation;
+    private Integer sender;
+    private String dateSent;
+    private String content;
+    private String senderName;
 
     public Message(Integer conversation, Integer sender, String content) {
         this.conversation = conversation;
@@ -25,10 +26,6 @@ public class Message {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Integer getConversation() {
@@ -57,6 +54,14 @@ public class Message {
 
     public String getContent() {
         return content;
+    }
+
+    public String getSenderName() {
+        return this.senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
     public void setContent(String content) {

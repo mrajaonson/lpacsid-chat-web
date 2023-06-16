@@ -108,6 +108,7 @@ public class UserDaoImpl implements UserDao {
         return false;
     }
 
+    @Override
     public User readUserById(Integer id) throws SQLException {
         try {
             this.getConnection();

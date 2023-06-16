@@ -77,7 +77,7 @@
                     <div>
                         <div class="card text-bg-primary mb-3 w-25">
                             <div class="card-body">
-                                <h5 class="card-title"><%= currentConversationMessage.getSender() %></h5>
+                                <h5 class="card-title"><%= currentConversationMessage.getSenderName() %></h5>
                                 <p class="card-text"><%= currentConversationMessage.getContent() %></p>
                             </div>
                         </div>

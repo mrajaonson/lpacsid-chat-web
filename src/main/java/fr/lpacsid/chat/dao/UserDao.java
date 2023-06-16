@@ -10,6 +10,8 @@ public interface UserDao {
 
     User readUser(String username) throws SQLException;
 
+    User readUserById(Integer id) throws SQLException;
+
     void updateUser(User user);
 
     void deleteUser(String username);
