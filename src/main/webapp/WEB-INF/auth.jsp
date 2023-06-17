@@ -12,19 +12,17 @@
     <title>Auth</title>
 </head>
 <body>
-    <form class="container text-center" action="Auth" method="post" style="width: 30%">
-        <h2 class="title">Connexion</h2>
-        <div class="form-floating mb-2">
-            <input type="text" class="form-control" id="login" name="login" required>
-            <label for="login">Login</label>
-        </div>
-        <div class="form-floating mb-2">
-            <input type="password" class="form-control" id="password" name="password" required>
-            <label for="password">Mot de passe</label>
-        </div>
-        <button class="btn btn-primary" type="submit" name="auth">
+<div class="container text-center" style="width: 30%">
+    <form action="Login" method="GET">
+        <button class="btn btn-outline-primary">
             Se connecter
         </button>
     </form>
+    <form action="Signup" method="GET">
+        <button class="btn btn-outline-primary">
+            S'inscrire
+        </button>
+    </form>
+</div>
 </body>
 </html>

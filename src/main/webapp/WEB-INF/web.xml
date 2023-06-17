@@ -11,12 +11,28 @@
     <servlet-class>fr.lpacsid.chat.servlets.Auth</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>Login</servlet-name>
+    <servlet-class>fr.lpacsid.chat.servlets.Login</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Signup</servlet-name>
+    <servlet-class>fr.lpacsid.chat.servlets.Signup</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>Home</servlet-name>
     <servlet-class>fr.lpacsid.chat.servlets.Home</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Auth</servlet-name>
     <url-pattern>/Auth</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Login</servlet-name>
+    <url-pattern>/Login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Signup</servlet-name>
+    <url-pattern>/Signup</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Home</servlet-name>

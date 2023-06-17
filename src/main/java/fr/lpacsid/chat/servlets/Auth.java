@@ -17,58 +17,15 @@ import java.util.logging.Logger;
 
 public class Auth extends HttpServlet {
 
-    private UserDao userDao;
-
-    @Override
-    public void init() {
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        this.userDao = daoFactory.getUserDao();
-    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
         ServletContext context = getServletContext();
-
-        String userSession = (String) session.getAttribute("user");
-
-        if (userSession != null) {
-            response.sendRedirect("Home");
-        } else {
-            context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
-        }
+        context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        ServletContext contexte = getServletContext();
-        RequestDispatcher dispatcher = null;
-
-        // Auth form
-        String authForm = request.getParameter("auth");
-        if (authForm != null) {
-            String login = request.getParameter("login");
-            String password = request.getParameter("password");
-
-            boolean canConnect = false;
-            try {
-                canConnect = userDao.validateUser(login, password);
-            } catch (SQLException e) {
-                Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
-            }
-
-            if (canConnect) {
-                session.setAttribute("user", login);
-                response.sendRedirect("Home");
-            } else {
-                dispatcher = contexte.getRequestDispatcher("/WEB-INF/auth.jsp");
-            }
-        } else {
-            dispatcher = contexte.getRequestDispatcher("/WEB-INF/auth.jsp");
-        }
-        if (dispatcher != null) {
-            dispatcher.forward(request, response);
-        }
+        ServletContext context = getServletContext();
+        context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
     }
 }

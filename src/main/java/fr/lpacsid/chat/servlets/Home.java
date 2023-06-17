@@ -41,18 +41,21 @@ public class Home extends HttpServlet {
         ServletContext context = getServletContext();
 
         String userSession = (String) session.getAttribute("user");
-        User u1;
-        List<Conversation> conversations;
-        try {
-            u1 = userDao.readUser(userSession);
-            // Récupération des conversations du user
-            conversations = conversationDao.readAllUserConversations(u1.getLogin());
-            session.setAttribute("userConversations", conversations);
-        } catch (SQLException e) {
-            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
+        if (userSession != null) {
+            User u1;
+            List<Conversation> conversations;
+            try {
+                u1 = userDao.readUser(userSession);
+                // Récupération des conversations du user
+                conversations = conversationDao.readAllUserConversations(u1.getLogin());
+                session.setAttribute("userConversations", conversations);
+            } catch (SQLException e) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
+            }
+            context.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
+        } else {
+            context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
         }
-
-        context.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
     }
 
     @Override
