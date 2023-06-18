@@ -1,4 +1,4 @@
-package fr.lpacsid.chat;
+package fr.lpacsid.chat.enums;
 
 public enum UserStatus {
     AVAILABLE("Available", "Disponible"),
@@ -7,8 +7,8 @@ public enum UserStatus {
     ABSENT("Absent", "Absent"),
     OFFLINE("Offline", "Hors ligne");
 
-    private String en;
-    private String fr;
+    private final String en;
+    private final String fr;
 
     public String getEn() {
         return en;
@@ -18,5 +18,8 @@ public enum UserStatus {
         return fr;
     }
 
-    UserStatus(String en, String fr) {}
+    UserStatus(String en, String fr) {
+        this.en = en;
+        this.fr = fr;
+    }
 }

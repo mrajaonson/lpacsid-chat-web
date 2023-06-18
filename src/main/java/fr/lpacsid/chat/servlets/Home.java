@@ -78,8 +78,11 @@ public class Home extends HttpServlet {
             String userSearch = request.getParameter("userSearch");
             try {
                 User u2 = userDao.readUser(userSearch);
-                Conversation conversation = new Conversation(u1, u2);
-                conversationDao.createConversation(conversation);
+                // Vérification si User existe
+                if (u2 != null) {
+                    Conversation conversation = new Conversation(u1, u2);
+                    conversationDao.createConversation(conversation);
+                }
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
             }

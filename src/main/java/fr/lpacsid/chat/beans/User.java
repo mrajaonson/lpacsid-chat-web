@@ -1,15 +1,17 @@
 package fr.lpacsid.chat.beans;
 
-import fr.lpacsid.chat.UserStatus;
+import fr.lpacsid.chat.enums.UserStatus;
 
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class User {
     private Integer id;
     private String login;
     private String password;
     private String creationDate;
-    private String status;
+    private UserStatus status;
     private String lastConnection;
 
     public Integer getId() {
@@ -44,12 +46,33 @@ public class User {
         this.creationDate = creationDate;
     }
 
-    public String getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public void setStatusFromStringValue(String status) {
+        try {
+            this.status = UserStatus.valueOf(status);
+        } catch (IllegalArgumentException e) {
+            this.status = UserStatus.OFFLINE;
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    public String getStatusString() {
+        return this.status.toString();
+    }
+
+    public String getFrenchStatus() {
+        return this.status.getFr();
+    }
+
+    public String getEnglishStatus() {
+        return this.status.getEn();
     }
 
     public String getLastConnection() {
@@ -65,15 +88,15 @@ public class User {
     }
 
     public void initLastConnection() {
-        this.creationDate = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
+        this.lastConnection = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
     }
 
     public User(String login, String password) {
         this.login = login;
         this.password = password;
-        this.status = UserStatus.OFFLINE.toString();
         this.initCreationDate();
         this.initLastConnection();
+        this.status = UserStatus.OFFLINE;
     }
 
     public User(String login) {
@@ -84,7 +107,7 @@ public class User {
         this.id = id;
         this.login = login;
         this.creationDate = creationDate;
-        this.status = status;
+        this.setStatusFromStringValue(status);
         this.lastConnection = lastConnection;
     }
 }

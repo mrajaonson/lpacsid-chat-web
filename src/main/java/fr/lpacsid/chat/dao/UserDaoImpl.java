@@ -32,19 +32,26 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    private void logErrorException(Exception e) {
+        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+    }
+
     @Override
     public void createUser(User user) throws SQLException {
         try {
             getConnection();
-            String query = "INSERT INTO users(login, password) VALUES(?, ?)";
+            String query = "INSERT INTO users(login, password, creationDate, status, lastConnection) VALUES(?, ?, ?, ?,?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, user.getLogin());
             this.preparedStatement.setString(2, user.getPassword());
+            this.preparedStatement.setString(3, user.getCreationDate());
+            this.preparedStatement.setString(4, user.getStatusString());
+            this.preparedStatement.setString(5, user.getLastConnection());
 
             this.preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            this.logErrorException(e);
         } finally {
             closeConnection();
         }
@@ -69,7 +76,7 @@ public class UserDaoImpl implements UserDao {
                 return new User(id, username, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
-            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            this.logErrorException(e);
         } finally {
             this.closeConnection();
         }
@@ -101,7 +108,7 @@ public class UserDaoImpl implements UserDao {
                 return true;
             }
         } catch (SQLException e) {
-            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            this.logErrorException(e);
         } finally {
             this.closeConnection();
         }
@@ -126,7 +133,7 @@ public class UserDaoImpl implements UserDao {
                 return new User(id, login, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
-            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            this.logErrorException(e);
         } finally {
             this.closeConnection();
         }

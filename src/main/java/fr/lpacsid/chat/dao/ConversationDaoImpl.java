@@ -35,18 +35,26 @@ public class ConversationDaoImpl implements ConversationDao {
         }
     }
 
+    private void logErrorException(Exception e) {
+        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+    }
+
     @Override
     public void createConversation(Conversation conversation) throws SQLException {
         try {
             this.getConnection();
-            String query = "INSERT INTO conversations(user1, user2, creationDate) VALUES(?, ?, ?)";
-            this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setInt(1, conversation.getUserIdByIndex(0));
-            this.preparedStatement.setInt(2, conversation.getUserIdByIndex(1));
-            this.preparedStatement.setString(3, conversation.getCreationDate());
+            // Vérification si existant avant création
+            if (!this.checkIfConversationExists(conversation)) {
+                String query = "INSERT INTO conversations(user1, user2, creationDate) VALUES(?, ?, ?)";
+                this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.executeUpdate();
+                this.preparedStatement.setInt(1, conversation.getUserIdByIndex(0));
+                this.preparedStatement.setInt(2, conversation.getUserIdByIndex(1));
+                this.preparedStatement.setString(3, conversation.getCreationDate());
+
+                this.preparedStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
         } finally {
@@ -129,5 +137,16 @@ public class ConversationDaoImpl implements ConversationDao {
             this.closeConnection();
         }
         return null;
+    }
+
+    public boolean checkIfConversationExists(Conversation conversation) throws SQLException {
+        try {
+            this.getConnection();
+        } catch (SQLException e) {
+            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            this.closeConnection();
+        }
+        return false;
     }
 }
