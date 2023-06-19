@@ -1,5 +1,7 @@
 package fr.lpacsid.chat.beans;
 
+import fr.lpacsid.chat.enums.ConversationTypes;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,24 +9,27 @@ import java.util.Objects;
 
 public class Conversation {
     private Integer id;
-    private List<User> users;
-
+    private User admin;
     private String creationDate;
+    private List<Participant> participants = new ArrayList<>();
+    private ConversationTypes type;
+    private List<Message> messages = new ArrayList<>();
+    private String label;
 
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getAdmin() {
+        return admin;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setAdmin(User admin) {
+        this.admin = admin;
     }
 
     public String getCreationDate() {
@@ -35,48 +40,79 @@ public class Conversation {
         this.creationDate = creationDate;
     }
 
+    public List<Participant> getParticipations() {
+        return participants;
+    }
+
+    public void setParticipations(List<Participant> participants) {
+        this.participants = participants;
+    }
+
+    public ConversationTypes getType() {
+        return type;
+    }
+
+    public void setType(ConversationTypes type) {
+        this.type = type;
+    }
+
+    public List<Message> getMessages() {
+        return this.messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getTypeString() {
+        return this.type.toString();
+    }
+
+    public void setTypeFromStringValue(String type) {
+        this.type = ConversationTypes.valueOf(type);
+    }
+
     public void initCreationDate() {
         this.creationDate = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
     }
 
-    public Conversation() {
-        this.users = new ArrayList<>();
-        this.initCreationDate();
-    }
-
-    public Conversation(Integer id, User u1, User u2, String creationDate) {
+    public Conversation(Integer id, User admin, String creationDate, List<Participant> participants, String label, String type) {
         this.id = id;
-        this.users = new ArrayList<>();
+        this.admin = admin;
         this.creationDate = creationDate;
-        this.addUser(u1);
-        this.addUser(u2);
+        this.participants = participants;
+        this.label = label;
+        this.setTypeFromStringValue(type);
     }
 
-    public Conversation(User u1, User u2) {
-        this.users = new ArrayList<>();
-        this.addUser(u1);
-        this.addUser(u2);
+    public Conversation(User admin, ConversationTypes type) {
+        this.admin = admin;
         this.initCreationDate();
+        this.addParticipant(admin);
+        this.label = "";
+        this.type = type;
     }
 
-    public void addUser(User user) {
-        this.users.add(user);
+    public void addParticipant(User user) {
+        Participant participant = new Participant(this.id, user);
+        this.participants.add(participant);
     }
 
-    public Integer getUserIdByIndex(Integer i) {
-        return this.users.get(i).getId();
-    }
+    public User getDiscussionParticipant(Integer userAdminId) {
+        Participant participant = this.participants.stream()
+                .filter(i -> !Objects.equals(i.getUser().getId(), userAdminId))
+                .findFirst()
+                .orElse(null);
 
-    public String getUserNameByIndex(Integer i) {
-        return this.users.get(i).getLogin();
-    }
-
-    public String getContactName(String username) {
-        for (User user : this.getUsers()) {
-            if (!Objects.equals(user.getLogin(), username)) {
-                return user.getLogin();
-            }
-        }
-        return null;
+        assert participant != null;
+        return participant.getUser();
     }
 }

@@ -44,4 +44,8 @@ public class DaoFactory {
     public MessageDao getMessageDao() {
         return new MessageDaoImpl(this);
     }
+
+    public ParticipantDao getParticipationDao() {
+        return new ParticipantDaoImpl(this);
+    }
 }

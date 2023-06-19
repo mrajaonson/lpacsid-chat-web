@@ -1,5 +1,6 @@
 package fr.lpacsid.chat.servlets;
 
+import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.UserDao;
 import jakarta.servlet.RequestDispatcher;
@@ -45,27 +46,28 @@ public class Login extends HttpServlet {
         RequestDispatcher dispatcher = null;
 
         // Auth form
-        String authForm = request.getParameter("login");
-        if (authForm != null) {
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
+        try {
+            String authForm = request.getParameter("login");
+            if (authForm != null) {
+                String username = request.getParameter("username");
+                String password = request.getParameter("password");
 
-            boolean canConnect = false;
-            try {
-                canConnect = userDao.validateUser(username, password);
-            } catch (SQLException e) {
-                Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
-            }
+                boolean canConnect = userDao.validateUser(username, password);
 
-            if (canConnect) {
-                session.setAttribute("user", username);
-                response.sendRedirect("Home");
+                if (canConnect) {
+                    User user = userDao.readUser(username);
+                    session.setAttribute("userSession", user);
+                    response.sendRedirect("Home");
+                } else {
+                    dispatcher = contexte.getRequestDispatcher("/WEB-INF/login.jsp");
+                }
             } else {
                 dispatcher = contexte.getRequestDispatcher("/WEB-INF/login.jsp");
             }
-        } else {
-            dispatcher = contexte.getRequestDispatcher("/WEB-INF/login.jsp");
+        } catch (SQLException e) {
+            Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
         }
+
         if (dispatcher != null) {
             dispatcher.forward(request, response);
         }

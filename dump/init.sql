@@ -30,3 +30,11 @@ CREATE TABLE `chat`.`messages` (
     `content` VARCHAR(10000) NOT NULL ,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+
+CREATE TABLE `chat`.`participants` (
+    `id` INT NOT NULL AUTO_INCREMENT ,
+    `conversation` INT NOT NULL ,
+    `user` INT NOT NULL ,
+    `addDate` VARCHAR(50) NOT NULL ,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;

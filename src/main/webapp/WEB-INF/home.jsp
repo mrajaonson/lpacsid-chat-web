@@ -51,13 +51,12 @@
             <ul class="list-group list-group-flush">
             <%
                 List<Conversation> conversations = (List<Conversation>) request.getSession().getAttribute("userConversations");
-                String username = request.getSession().getAttribute("user").toString();
                 assert conversations != null;
                 for (Conversation conversation : conversations) {
             %>
                 <form action="Home" method="post">
                     <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
-                    <button type="submit" class="btn" name="setCurrentConversationId"><%= conversation.getContactName(username) %></button>
+                    <button type="submit" class="btn" name="setCurrentConversationId"><%= conversation.getLabel() %></button>
                 </form>
             <% } %>
             </ul>
@@ -65,20 +64,17 @@
         <%-- Affichage messages --%>
         <div class="col h-100" style="background-color: #5c636a">
             <div class="">
-                <%
-                    Conversation currentConversationObj = (Conversation) request.getSession().getAttribute("currentConversationObj");
-                    List<Message> currentConversationMessages = (List<Message>) request.getSession().getAttribute("currentConversationMessages");
-                %>
-                <h2><%= currentConversationObj.getContactName(username) %></h2>
+                <% Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation"); %>
+                <h2><%= currentConversation.getLabel() %></h2>
             </div>
             <div class="container text-center" style="width: 100%; height: 90%; overflow: auto">
                 <div class="row">
-                    <% for (Message currentConversationMessage : currentConversationMessages) { %>
+                    <% for (Message currentMessage : currentConversation.getMessages()) { %>
                     <div>
                         <div class="card text-bg-primary mb-3 w-25">
                             <div class="card-body">
-                                <h5 class="card-title"><%= currentConversationMessage.getSenderName() %></h5>
-                                <p class="card-text"><%= currentConversationMessage.getContent() %></p>
+                                <h5 class="card-title"><%= currentMessage.getSenderName() %></h5>
+                                <p class="card-text"><%= currentMessage.getContent() %></p>
                             </div>
                         </div>
                     </div>

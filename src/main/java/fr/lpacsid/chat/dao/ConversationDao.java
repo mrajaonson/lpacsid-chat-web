@@ -14,5 +14,7 @@ public interface ConversationDao {
 
     void deleteConversation(Integer id) throws SQLException;
 
-    List<Conversation> readAllUserConversations(String username) throws SQLException;
+    List<Conversation> readAllUserConversations(Integer userId) throws SQLException;
+
+    List<Integer> readAllUserConversationsId(Integer userId) throws SQLException;
 }

@@ -7,6 +7,7 @@ import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
+import fr.lpacsid.chat.enums.ConversationTypes;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -40,14 +41,12 @@ public class Home extends HttpServlet {
         HttpSession session = request.getSession();
         ServletContext context = getServletContext();
 
-        String userSession = (String) session.getAttribute("user");
+        User userSession = (User) session.getAttribute("userSession");
         if (userSession != null) {
-            User u1;
             List<Conversation> conversations;
             try {
-                u1 = userDao.readUser(userSession);
                 // Récupération des conversations du user
-                conversations = conversationDao.readAllUserConversations(u1.getLogin());
+                conversations = this.conversationDao.readAllUserConversations(userSession.getId());
                 session.setAttribute("userConversations", conversations);
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
@@ -60,69 +59,67 @@ public class Home extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        ServletContext contexte = getServletContext();
-        RequestDispatcher dispatcher;
-
-        String userSession = (String) session.getAttribute("user");
-        User u1 = null;
         try {
-            u1 = userDao.readUser(userSession);
+            HttpSession session = request.getSession();
+            ServletContext contexte = getServletContext();
+            RequestDispatcher dispatcher;
+
+            User userSession = (User) session.getAttribute("userSession");
+
+            // Create conversation form
+            String addContactForm = request.getParameter("addContact");
+            if (addContactForm != null) {
+                String userSearch = request.getParameter("userSearch");
+                User userParticipant = userDao.readUser(userSearch);
+                // Vérification si User existe
+                if (userParticipant != null) {
+                    Conversation conversation = new Conversation(userSession, ConversationTypes.DISCUSSION);
+                    conversation.addParticipant(userParticipant);
+                    conversationDao.createConversation(conversation);
+                }
+                // Récupération des conversations du user
+                List<Conversation> conversations = this.conversationDao.readAllUserConversations(userSession.getId());
+                session.setAttribute("userConversations", conversations);
+            }
+
+            // Display conversation form
+            String currentConversationForm = request.getParameter("setCurrentConversationId");
+            if (currentConversationForm != null) {
+                int currentConversationId = Integer.parseInt(currentConversationForm);
+                // Get all conversation messages
+                List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationId);
+
+                // Get conversation
+                Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
+                currentConversationObj.setMessages(currentConversationMessages);
+
+                // Set current conversation to session
+                session.setAttribute("currentConversation", currentConversationObj);
+            }
+
+            // Send message
+            String sendMessage = request.getParameter("sendMessage");
+            if (sendMessage != null) {
+                String messageInput = request.getParameter("messageInput");
+
+                // Get the current conversation
+                Conversation currentConversationObj = (Conversation) session.getAttribute("currentConversation");
+
+                assert userSession != null;
+                Message message = new Message(currentConversationObj.getId(), userSession.getId(), messageInput);
+                messageDao.createMessage(message);
+
+                // Refresh messages list
+                List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
+                currentConversationObj.setMessages(currentConversationMessages);
+                session.setAttribute("currentConversation", currentConversationObj);
+            }
+
+            dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
+            dispatcher.forward(request, response);
+
         } catch (SQLException e) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
         }
-
-        // Add contact form
-        String addContactForm = request.getParameter("addContact");
-        if (addContactForm != null) {
-            String userSearch = request.getParameter("userSearch");
-            try {
-                User u2 = userDao.readUser(userSearch);
-                // Vérification si User existe
-                if (u2 != null) {
-                    Conversation conversation = new Conversation(u1, u2);
-                    conversationDao.createConversation(conversation);
-                }
-            } catch (SQLException e) {
-                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-
-        // Display conversation form
-        String currentConversation = request.getParameter("setCurrentConversationId");
-        if (currentConversation != null) {
-            int currentConversationId = Integer.parseInt(currentConversation);
-            session.setAttribute("currentConversationId", currentConversationId);
-            Conversation currentConversationObj;
-            List<Message> currentConversationMessages;
-            try {
-                currentConversationObj = conversationDao.readConversation(currentConversationId);
-                currentConversationMessages = messageDao.readAllConversationMessages(currentConversationId);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            session.setAttribute("currentConversationObj", currentConversationObj);
-            session.setAttribute("currentConversationMessages", currentConversationMessages);
-        }
-
-        // Send message
-        String sendMessage = request.getParameter("sendMessage");
-        if (sendMessage != null) {
-            String messageInput = request.getParameter("messageInput");
-            Conversation currentConversationObj = (Conversation) session.getAttribute("currentConversationObj");
-            assert u1 != null;
-            Message message = new Message(currentConversationObj.getId(), u1.getId(), messageInput);
-            List<Message> currentConversationMessages;
-            try {
-                messageDao.createMessage(message);
-                currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            session.setAttribute("currentConversationMessages", currentConversationMessages);
-        }
-
-        dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
-        dispatcher.forward(request, response);
     }
 }
