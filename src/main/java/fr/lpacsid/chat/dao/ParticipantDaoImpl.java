@@ -1,6 +1,6 @@
 package fr.lpacsid.chat.dao;
 
-import fr.lpacsid.chat.beans.Participant;
+import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
 
 import java.sql.Connection;
@@ -42,16 +42,16 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public void createParticipant(Participant participant) throws SQLException {
+    public void createParticipant(Participation participation) throws SQLException {
         try {
             this.getConnection();
 
             String query = "INSERT INTO participants(conversation, user, addDate) VALUES (?, ?, ?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setInt(1, participant.getConversation());
-            this.preparedStatement.setInt(2, participant.getUser().getId());
-            this.preparedStatement.setString(3, participant.getAddDate());
+            this.preparedStatement.setInt(1, participation.getConversation());
+            this.preparedStatement.setInt(2, participation.getUser().getId());
+            this.preparedStatement.setString(3, participation.getAddDate());
 
             this.preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public Participant readParticipant(Integer conversationId, Integer userId) throws SQLException {
+    public Participation readParticipant(Integer conversationId, Integer userId) throws SQLException {
         try {
             this.getConnection();
 
@@ -80,7 +80,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
 
                 User user = this.userDao.readUserById(userId);
 
-                return new Participant(id, conversationId, user, addDate);
+                return new Participation(id, conversationId, user, addDate);
             }
         } catch (SQLException e) {
             this.logErrorException(e);
@@ -91,7 +91,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public void updateParticipant(Participant participant) throws SQLException {
+    public void updateParticipant(Participation participation) throws SQLException {
 
     }
 
@@ -101,10 +101,10 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public List<Participant> readAllConversationParticipants(Integer conversationId) throws SQLException {
+    public List<Participation> readAllConversationParticipants(Integer conversationId) throws SQLException {
         try {
             this.getConnection();
-            List<Participant> participants = new ArrayList<>();
+            List<Participation> participants = new ArrayList<>();
 
             String query = "SELECT * FROM participants WHERE conversation = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
@@ -119,8 +119,8 @@ public class ParticipantDaoImpl implements ParticipantDao {
                 Integer userId = resultSet.getInt("user");
 
                 User user = this.userDao.readUserById(userId);
-                Participant participant = new Participant(id, conversationId, user, addDate);
-                participants.add(participant);
+                Participation participation = new Participation(id, conversationId, user, addDate);
+                participants.add(participation);
             }
             return participants;
         } catch (SQLException e) {

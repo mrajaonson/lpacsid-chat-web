@@ -30,7 +30,7 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         ServletContext context = getServletContext();
 
-        String userSession = (String) session.getAttribute("user");
+        User userSession = (User) session.getAttribute("userSession");
 
         if (userSession != null) {
             response.sendRedirect("Home");
@@ -48,6 +48,7 @@ public class Login extends HttpServlet {
         // Auth form
         try {
             String authForm = request.getParameter("login");
+
             if (authForm != null) {
                 String username = request.getParameter("username");
                 String password = request.getParameter("password");

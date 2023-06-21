@@ -2,7 +2,7 @@ package fr.lpacsid.chat.beans;
 
 import java.time.LocalDateTime;
 
-public class Participant {
+public class Participation {
     private Integer id;
     private Integer conversation;
     private String addDate;
@@ -32,13 +32,13 @@ public class Participant {
         this.addDate = LocalDateTime.now().toString();
     }
 
-    public Participant(Integer conversation, User user) {
+    public Participation(Integer conversation, User user) {
         this.conversation = conversation;
         this.user = user;
         this.initAddDate();
     }
 
-    public Participant(Integer id, Integer conversation, User user, String addDate) {
+    public Participation(Integer id, Integer conversation, User user, String addDate) {
         this.id = id;
         this.conversation = conversation;
         this.user = user;

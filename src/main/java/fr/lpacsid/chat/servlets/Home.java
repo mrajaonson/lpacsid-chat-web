@@ -61,10 +61,15 @@ public class Home extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            ServletContext contexte = getServletContext();
+            ServletContext context = getServletContext();
             RequestDispatcher dispatcher;
 
             User userSession = (User) session.getAttribute("userSession");
+
+            // Redirect if not connected
+            if (userSession == null) {
+                context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
+            }
 
             // Create conversation form
             String addContactForm = request.getParameter("addContact");
@@ -92,6 +97,7 @@ public class Home extends HttpServlet {
                 // Get conversation
                 Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
                 currentConversationObj.setMessages(currentConversationMessages);
+                assert userSession != null;
                 String participantName = currentConversationObj.getDiscussionParticipant(userSession.getId()).getLogin();
                 currentConversationObj.setLabel(participantName);
 
@@ -117,7 +123,7 @@ public class Home extends HttpServlet {
                 session.setAttribute("currentConversation", currentConversationObj);
             }
 
-            dispatcher = contexte.getRequestDispatcher("/WEB-INF/home.jsp");
+            dispatcher = context.getRequestDispatcher("/WEB-INF/home.jsp");
             dispatcher.forward(request, response);
 
         } catch (SQLException e) {

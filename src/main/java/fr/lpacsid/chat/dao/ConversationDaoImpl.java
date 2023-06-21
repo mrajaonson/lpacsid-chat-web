@@ -1,7 +1,7 @@
 package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.Conversation;
-import fr.lpacsid.chat.beans.Participant;
+import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.enums.ConversationTypes;
 
@@ -61,9 +61,9 @@ public class ConversationDaoImpl implements ConversationDao {
 
             // Create participants
             Integer conversationId = this.getConversationId(conversation);
-            for (Participant participant : conversation.getParticipations()) {
-                participant.setConversation(conversationId);
-                this.participationDao.createParticipant(participant);
+            for (Participation participation : conversation.getParticipations()) {
+                participation.setConversation(conversationId);
+                this.participationDao.createParticipant(participation);
             }
         } catch (SQLException e) {
             Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
@@ -90,7 +90,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 String type = resultSet.getString("type");
 
                 User admin = this.userDao.readUserById(adminId);
-                List<Participant> participants = this.participationDao.readAllConversationParticipants(id);
+                List<Participation> participants = this.participationDao.readAllConversationParticipants(id);
 
                 return new Conversation(id, admin, creationDate, participants, label, type);
             }
@@ -121,11 +121,14 @@ public class ConversationDaoImpl implements ConversationDao {
 
             for (Integer conversationId : converationsId) {
                 Conversation conversation = this.readConversation(conversationId);
-                if (conversation.getType() == ConversationTypes.DISCUSSION) {
-                    User participant = conversation.getDiscussionParticipant(userId);
-                    conversation.setLabel(participant.getLogin());
+                if (conversation != null && conversation.getType() == ConversationTypes.DISCUSSION) {
+                    User participation = conversation.getDiscussionParticipant(userId);
+                    if (participation != null) {
+                        System.out.println("TEST" + participation.getLogin());
+                        conversation.setLabel(participation.getLogin());
+                        conversations.add(conversation);
+                    }
                 }
-                conversations.add(conversation);
             }
             return conversations;
         } catch (SQLException e) {

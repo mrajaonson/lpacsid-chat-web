@@ -11,7 +11,7 @@ public class Conversation {
     private Integer id;
     private User admin;
     private String creationDate;
-    private List<Participant> participants = new ArrayList<>();
+    private List<Participation> participations = new ArrayList<>();
     private ConversationTypes type;
     private List<Message> messages = new ArrayList<>();
     private String label;
@@ -40,12 +40,12 @@ public class Conversation {
         this.creationDate = creationDate;
     }
 
-    public List<Participant> getParticipations() {
-        return participants;
+    public List<Participation> getParticipations() {
+        return participations;
     }
 
-    public void setParticipations(List<Participant> participants) {
-        this.participants = participants;
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
     }
 
     public ConversationTypes getType() {
@@ -84,11 +84,11 @@ public class Conversation {
         this.creationDate = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
     }
 
-    public Conversation(Integer id, User admin, String creationDate, List<Participant> participants, String label, String type) {
+    public Conversation(Integer id, User admin, String creationDate, List<Participation> participations, String label, String type) {
         this.id = id;
         this.admin = admin;
         this.creationDate = creationDate;
-        this.participants = participants;
+        this.participations = participations;
         this.label = label;
         this.setTypeFromStringValue(type);
     }
@@ -102,17 +102,19 @@ public class Conversation {
     }
 
     public void addParticipant(User user) {
-        Participant participant = new Participant(this.id, user);
-        this.participants.add(participant);
+        Participation participation = new Participation(this.id, user);
+        this.participations.add(participation);
     }
 
     public User getDiscussionParticipant(Integer userAdminId) {
-        Participant participant = this.participants.stream()
+        Participation participation = this.participations.stream()
                 .filter(i -> !Objects.equals(i.getUser().getId(), userAdminId))
                 .findFirst()
                 .orElse(null);
 
-        assert participant != null;
-        return participant.getUser();
+        if (participation != null) {
+            return participation.getUser();
+        }
+        return null;
     }
 }
