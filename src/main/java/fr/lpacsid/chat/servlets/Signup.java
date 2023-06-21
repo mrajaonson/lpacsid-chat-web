@@ -59,7 +59,7 @@ public class Signup extends HttpServlet {
                         // Vérification si User créé
                         User userDB = userDao.readUser(username);
                         if (userDB != null) {
-                            session.setAttribute("user", username);
+                            session.setAttribute("userSession", userDB);
                             response.sendRedirect("Home");
                         } else {
                             request.setAttribute("errorSignup", "Erreur lors de la création du compte");

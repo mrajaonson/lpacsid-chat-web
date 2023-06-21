@@ -16,9 +16,10 @@ CREATE TABLE `chat`.`users` (
 
 CREATE TABLE `chat`.`conversations` (
     `id` INT NOT NULL AUTO_INCREMENT ,
-    `user1` VARCHAR(50) NOT NULL ,
-    `user2` VARCHAR(50) NOT NULL ,
+    `admin` VARCHAR(50) NOT NULL ,
     `creationDate` VARCHAR(50) NOT NULL ,
+    `label` VARCHAR(50) NOT NULL ,
+    `type` VARCHAR(50) NOT NULL ,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
