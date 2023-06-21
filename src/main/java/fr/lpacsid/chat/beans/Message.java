@@ -68,7 +68,10 @@ public class Message {
         this.content = content;
     }
 
+    /**
+     * format : 2023-06-01T00:31:15.116789
+     */
     public void initDateSent() {
-        this.dateSent = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
+        this.dateSent = LocalDateTime.now().toString();
     }
 }

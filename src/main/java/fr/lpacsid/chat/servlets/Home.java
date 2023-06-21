@@ -92,6 +92,8 @@ public class Home extends HttpServlet {
                 // Get conversation
                 Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
                 currentConversationObj.setMessages(currentConversationMessages);
+                String participantName = currentConversationObj.getDiscussionParticipant(userSession.getId()).getLogin();
+                currentConversationObj.setLabel(participantName);
 
                 // Set current conversation to session
                 session.setAttribute("currentConversation", currentConversationObj);
