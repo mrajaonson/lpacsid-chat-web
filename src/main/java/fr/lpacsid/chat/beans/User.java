@@ -1,10 +1,11 @@
 package fr.lpacsid.chat.beans;
 
 import fr.lpacsid.chat.enums.UserStatus;
+import fr.lpacsid.chat.utils.DateUtility;
 
-import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 public class User {
     private Integer id;
@@ -84,11 +85,11 @@ public class User {
     }
 
     public void initCreationDate() {
-        this.creationDate = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
+        this.creationDate = DateUtility.getLocalDateTimeNowToString();
     }
 
     public void initLastConnection() {
-        this.lastConnection = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
+        this.lastConnection = DateUtility.getLocalDateTimeNowToString();
     }
 
     public User(String login, String password) {

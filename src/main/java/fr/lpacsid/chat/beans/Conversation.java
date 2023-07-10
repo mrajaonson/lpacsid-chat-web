@@ -1,8 +1,8 @@
 package fr.lpacsid.chat.beans;
 
 import fr.lpacsid.chat.enums.ConversationTypes;
+import fr.lpacsid.chat.utils.DateUtility;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -81,7 +81,7 @@ public class Conversation {
     }
 
     public void initCreationDate() {
-        this.creationDate = LocalDateTime.now().toString(); //  2023-06-01T00:31:15.116789
+        this.creationDate = DateUtility.getLocalDateTimeNowToString();
     }
 
     public Conversation(Integer id, User admin, String creationDate, List<Participation> participations, String label, String type) {

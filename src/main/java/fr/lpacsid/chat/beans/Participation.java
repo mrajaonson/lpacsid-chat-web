@@ -1,6 +1,6 @@
 package fr.lpacsid.chat.beans;
 
-import java.time.LocalDateTime;
+import fr.lpacsid.chat.utils.DateUtility;
 
 public class Participation {
     private Integer id;
@@ -29,7 +29,7 @@ public class Participation {
     }
 
     public void initAddDate() {
-        this.addDate = LocalDateTime.now().toString();
+        this.addDate = DateUtility.getLocalDateTimeNowToString();
     }
 
     public Participation(Integer conversation, User user) {

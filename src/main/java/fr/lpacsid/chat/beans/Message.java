@@ -1,6 +1,6 @@
 package fr.lpacsid.chat.beans;
 
-import java.time.LocalDateTime;
+import fr.lpacsid.chat.utils.DateUtility;
 
 public class Message {
     private Integer id;
@@ -68,10 +68,7 @@ public class Message {
         this.content = content;
     }
 
-    /**
-     * format : 2023-06-01T00:31:15.116789
-     */
     public void initDateSent() {
-        this.dateSent = LocalDateTime.now().toString();
+        this.dateSent = DateUtility.getLocalDateTimeNowToString();
     }
 }
