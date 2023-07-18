@@ -7,6 +7,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="fr.lpacsid.chat.beans.Conversation" %>
 <%@ page import="fr.lpacsid.chat.beans.Message" %>
+<%@ page import="java.util.Objects" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -95,6 +96,7 @@
                         <%
                             List<Conversation> conversations = (List<Conversation>) request.getSession().getAttribute("userConversations");
                             assert conversations != null;
+                            Conversation getCurrentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
                             for (Conversation conversation : conversations) {
                         %>
                             <form action="Home" method="post" id="<%= conversation.getId() %>">
@@ -104,6 +106,7 @@
                                         class="btn list-group-item-action p-0"
                                         name="setCurrentConversationId">
                                     <%= conversation.getLabel() %>
+<%--                                    <%= Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "" %>--%>
                                 </button>
                             </form>
                         <% } %>
