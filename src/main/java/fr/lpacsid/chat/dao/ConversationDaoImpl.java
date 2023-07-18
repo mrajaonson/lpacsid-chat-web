@@ -124,7 +124,6 @@ public class ConversationDaoImpl implements ConversationDao {
                 if (conversation != null && conversation.getType() == ConversationTypes.DISCUSSION) {
                     User participation = conversation.getDiscussionParticipant(userId);
                     if (participation != null) {
-                        System.out.println("TEST" + participation.getLogin());
                         conversation.setLabel(participation.getLogin());
                         conversations.add(conversation);
                     }

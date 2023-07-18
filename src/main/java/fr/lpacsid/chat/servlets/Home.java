@@ -123,6 +123,15 @@ public class Home extends HttpServlet {
                 session.setAttribute("currentConversation", currentConversationObj);
             }
 
+            // Logout
+            String logout = request.getParameter("logout");
+            if ("logout".equals(logout)) {
+                session.setAttribute("userSession", null);
+                session.setAttribute("userConversations", null);
+                session.setAttribute("currentConversation", null);
+                context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
+            }
+
             dispatcher = context.getRequestDispatcher("/WEB-INF/home.jsp");
             dispatcher.forward(request, response);
 
