@@ -65,6 +65,9 @@
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
                         Canaux
+                        <div class="col-2">
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                        </div>
                     </h6>
                     <ul class="list-group list-group-flush">
                     </ul>
@@ -72,6 +75,9 @@
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
                         Groupes
+                        <div class="col-2">
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                        </div>
                     </h6>
                     <ul class="list-group list-group-flush">
                     </ul>
@@ -79,6 +85,10 @@
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
                         Messages privés
+                        <%-- Button trigger modal --%>
+                        <div class="col-2">
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                        </div>
                     </h6>
                     <%-- Liste des conversations --%>
                     <ul class="list-group list-group-flush">
@@ -100,22 +110,22 @@
                     </ul>
                 </li>
             </ul>
-            <%-- MODAL --%>
-            <jsp:include page="chatModal.jsp" />
         </div>
+        <%-- MODAL --%>
+        <jsp:include page="chatModal.jsp" />
         <div class="col d-flex flex-column">
             <%-- Affichage messages --%>
             <% Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation"); %>
 
             <div class="header">
-                <h2><%= currentConversation.getLabel() %></h2>
+                <h4><%= currentConversation.getLabel() %></h4>
             </div>
             <div class="content">
                 <% for (Message currentMessage : currentConversation.getMessages()) { %>
                 <div>
                     <div class="alert alert-light p-1">
                         <h5 class="card-title"><%= currentMessage.getSenderName() %></h5>
-                        <p><%= currentMessage.getDateSent() %></p>
+                        <span><%= currentMessage.getDateSent() %></span>
                         <p class="card-text"><%= currentMessage.getContent() %></p>
                     </div>
                 </div>
