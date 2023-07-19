@@ -28,14 +28,21 @@
 
         .content {
             position: sticky;
-            height: 100%;
             overflow-y: auto;
+            height: 82%;
         }
 
         .footer {
             position: sticky;
             bottom: 0;
             padding: 10px;
+        }
+
+        .stickyOverflow {
+            position: sticky;
+            overflow-y: auto;
+            top: 0;
+            height: 100%
         }
     </style>
     <title>Home</title>
@@ -61,7 +68,7 @@
 
 <div class="container-fluid h-100" style="padding-top: 4.5rem">
     <div class="row h-100">
-        <div class="col-2" style="position: sticky; overflow-y: auto; top: 0">
+        <div class="col-2 stickyOverflow">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
@@ -116,7 +123,7 @@
         </div>
         <%-- MODAL --%>
         <jsp:include page="chatModal.jsp" />
-        <div class="col d-flex flex-column">
+        <div class="col stickyOverflow">
             <%-- Affichage messages --%>
             <% Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation"); %>
 
