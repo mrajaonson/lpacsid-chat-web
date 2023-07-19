@@ -130,12 +130,14 @@
             <div class="header">
                 <h4><%= currentConversation.getLabel() %></h4>
             </div>
-            <div class="content">
+            <div class="content p-2" id="messagesContainer">
                 <% for (Message currentMessage : currentConversation.getMessages()) { %>
                 <div>
                     <div class="alert alert-light p-1">
-                        <h5 class="card-title"><%= currentMessage.getSenderName() %></h5>
-                        <span><%= currentMessage.getDateSent() %></span>
+                        <p class="card-title">
+                            <strong><%= currentMessage.getSenderName() %></strong>
+                            <small> - <%= currentMessage.getDateSent() %></small>
+                        </p>
                         <p class="card-text"><%= currentMessage.getContent() %></p>
                     </div>
                 </div>
@@ -149,6 +151,17 @@
                     </div>
                 </form>
             </div>
+            <script>
+                // Focus on the input
+                const inputElement = document.getElementById('messageInput');
+                inputElement.focus();
+
+                // Scroll the container to the bottom on page load
+                document.addEventListener('DOMContentLoaded', function() {
+                    const container = document.getElementById('messagesContainer');
+                    container.scrollTop = container.scrollHeight;
+                });
+            </script>
         </div>
     </div>
 </div>
