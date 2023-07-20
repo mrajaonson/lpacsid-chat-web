@@ -146,7 +146,7 @@
             <div class="footer">
                 <form action="Home" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="messageInput" name="messageInput" placeholder="Message">
+                        <input type="text" class="form-control" id="messageInput" name="messageInput" placeholder="Message" autocomplete="off">
                         <button class="btn btn-outline-secondary" type="submit" name="sendMessage">Envoyer</button>
                     </div>
                 </form>

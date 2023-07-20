@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.beans;
 
 import fr.lpacsid.chat.enums.ConversationTypes;
+import fr.lpacsid.chat.enums.RoleConversation;
 import fr.lpacsid.chat.utils.DateUtility;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 public class Conversation {
     private Integer id;
-    private User admin;
+    private User prime;
     private String creationDate;
     private List<Participation> participations = new ArrayList<>();
     private ConversationTypes type;
@@ -24,12 +25,12 @@ public class Conversation {
         this.id = id;
     }
 
-    public User getAdmin() {
-        return admin;
+    public User getPrime() {
+        return prime;
     }
 
-    public void setAdmin(User admin) {
-        this.admin = admin;
+    public void setPrime(User prime) {
+        this.prime = prime;
     }
 
     public String getCreationDate() {
@@ -84,37 +85,44 @@ public class Conversation {
         this.creationDate = DateUtility.getLocalDateTimeNowToString();
     }
 
-    public Conversation(Integer id, User admin, String creationDate, List<Participation> participations, String label, String type) {
+    public Conversation(Integer id, User prime, String creationDate, List<Participation> participations, String label, String type) {
         this.id = id;
-        this.admin = admin;
+        this.prime = prime;
         this.creationDate = creationDate;
         this.participations = participations;
         this.label = label;
         this.setTypeFromStringValue(type);
     }
 
-    public Conversation(User admin, ConversationTypes type) {
-        this.admin = admin;
+    public Conversation(User prime, ConversationTypes type) {
+        this.prime = prime;
         this.initCreationDate();
-        this.addParticipant(admin);
+        this.addModerator(prime);
         this.label = "";
         this.type = type;
     }
 
     public void addParticipant(User user) {
-        Participation participation = new Participation(this.id, user);
+        Participation participation = new Participation(this.id, user, RoleConversation.PARTICIPANT);
         this.participations.add(participation);
     }
 
-    public User getDiscussionParticipant(Integer userAdminId) {
-        Participation participation = this.participations.stream()
-                .filter(i -> !Objects.equals(i.getUser().getId(), userAdminId))
-                .findFirst()
-                .orElse(null);
+    public void addModerator(User user) {
+        Participation participation = new Participation(this.id, user, RoleConversation.MODERATOR);
+        this.participations.add(participation);
+    }
 
-        if (participation != null) {
-            return participation.getUser();
+    public void setDiscussionLabel(Integer userId) {
+        if (this.type.equals(ConversationTypes.DISCUSSION)) {
+            Participation participation = this.participations.stream()
+                    .filter(i -> !Objects.equals(i.getUser().getId(), userId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (participation != null) {
+                System.out.println("SET LABEL : " + participation.getUser().getLogin());
+                this.label = participation.getUser().getLogin();
+            }
         }
-        return null;
     }
 }

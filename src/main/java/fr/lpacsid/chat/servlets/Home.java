@@ -98,8 +98,7 @@ public class Home extends HttpServlet {
                 Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
                 currentConversationObj.setMessages(currentConversationMessages);
                 assert userSession != null;
-                String participantName = currentConversationObj.getDiscussionParticipant(userSession.getId()).getLogin();
-                currentConversationObj.setLabel(participantName);
+                currentConversationObj.setDiscussionLabel(userSession.getId());
 
                 // Set current conversation to session
                 session.setAttribute("currentConversation", currentConversationObj);
@@ -114,13 +113,15 @@ public class Home extends HttpServlet {
                 Conversation currentConversationObj = (Conversation) session.getAttribute("currentConversation");
 
                 assert userSession != null;
-                Message message = new Message(currentConversationObj.getId(), userSession.getId(), messageInput);
-                messageDao.createMessage(message);
+                if (!messageInput.equals("")) {
+                    Message message = new Message(currentConversationObj.getId(), userSession.getId(), messageInput);
+                    messageDao.createMessage(message);
 
-                // Refresh messages list
-                List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
-                currentConversationObj.setMessages(currentConversationMessages);
-                session.setAttribute("currentConversation", currentConversationObj);
+                    // Refresh messages list
+                    List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
+                    currentConversationObj.setMessages(currentConversationMessages);
+                    session.setAttribute("currentConversation", currentConversationObj);
+                }
             }
 
             // Logout

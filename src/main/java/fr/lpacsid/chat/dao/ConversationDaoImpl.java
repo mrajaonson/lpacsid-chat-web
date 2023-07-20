@@ -3,7 +3,6 @@ package fr.lpacsid.chat.dao;
 import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
-import fr.lpacsid.chat.enums.ConversationTypes;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,10 +48,10 @@ public class ConversationDaoImpl implements ConversationDao {
     public void createConversation(Conversation conversation) throws SQLException {
         try {
             this.getConnection();
-            String query = "INSERT INTO conversations(admin, creationDate, label, type) VALUES(?, ?, ?, ?)";
+            String query = "INSERT INTO conversations(prime, creationDate, label, type) VALUES(?, ?, ?, ?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setInt(1, conversation.getAdmin().getId());
+            this.preparedStatement.setInt(1, conversation.getPrime().getId());
             this.preparedStatement.setString(2, conversation.getCreationDate());
             this.preparedStatement.setString(3, conversation.getLabel());
             this.preparedStatement.setString(4, conversation.getTypeString());
@@ -84,15 +83,15 @@ public class ConversationDaoImpl implements ConversationDao {
             ResultSet resultSet = this.preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                Integer adminId = resultSet.getInt("admin");
+                Integer primeId = resultSet.getInt("prime");
                 String creationDate = resultSet.getString("creationDate");
                 String label = resultSet.getString("label");
                 String type = resultSet.getString("type");
 
-                User admin = this.userDao.readUserById(adminId);
+                User prime = this.userDao.readUserById(primeId);
                 List<Participation> participants = this.participationDao.readAllConversationParticipants(id);
 
-                return new Conversation(id, admin, creationDate, participants, label, type);
+                return new Conversation(id, prime, creationDate, participants, label, type);
             }
         } catch (SQLException e) {
             Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
@@ -121,12 +120,9 @@ public class ConversationDaoImpl implements ConversationDao {
 
             for (Integer conversationId : converationsId) {
                 Conversation conversation = this.readConversation(conversationId);
-                if (conversation != null && conversation.getType() == ConversationTypes.DISCUSSION) {
-                    User participation = conversation.getDiscussionParticipant(userId);
-                    if (participation != null) {
-                        conversation.setLabel(participation.getLogin());
-                        conversations.add(conversation);
-                    }
+                if (conversation != null) {
+                    conversation.setDiscussionLabel(userId);
+                    conversations.add(conversation);
                 }
             }
             return conversations;
@@ -171,11 +167,11 @@ public class ConversationDaoImpl implements ConversationDao {
     private Integer getConversationId(Conversation conversation) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT * FROM conversations WHERE admin = ? AND creationDate = ? AND type = ?";
+            String query = "SELECT * FROM conversations WHERE prime = ? AND creationDate = ? AND type = ?";
 
             this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setInt(1, conversation.getAdmin().getId());
+            this.preparedStatement.setInt(1, conversation.getPrime().getId());
             this.preparedStatement.setString(2, conversation.getCreationDate());
             this.preparedStatement.setString(3, conversation.getTypeString());
 

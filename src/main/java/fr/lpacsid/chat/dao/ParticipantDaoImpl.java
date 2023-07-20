@@ -46,12 +46,13 @@ public class ParticipantDaoImpl implements ParticipantDao {
         try {
             this.getConnection();
 
-            String query = "INSERT INTO participants(conversation, user, addDate) VALUES (?, ?, ?)";
+            String query = "INSERT INTO participants(conversation, user, addDate, role) VALUES (?, ?, ?, ?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, participation.getConversation());
             this.preparedStatement.setInt(2, participation.getUser().getId());
             this.preparedStatement.setString(3, participation.getAddDate());
+            this.preparedStatement.setString(4, participation.getStringRole());
 
             this.preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -77,10 +78,11 @@ public class ParticipantDaoImpl implements ParticipantDao {
             if (resultSet.next()) {
                 Integer id = resultSet.getInt("id");
                 String addDate = resultSet.getString("addDate");
+                String role = resultSet.getString("role");
 
                 User user = this.userDao.readUserById(userId);
 
-                return new Participation(id, conversationId, user, addDate);
+                return new Participation(id, conversationId, user, addDate, role);
             }
         } catch (SQLException e) {
             this.logErrorException(e);
@@ -117,9 +119,10 @@ public class ParticipantDaoImpl implements ParticipantDao {
                 Integer id = resultSet.getInt("id");
                 String addDate = resultSet.getString("addDate");
                 Integer userId = resultSet.getInt("user");
+                String role = resultSet.getString("role");
 
                 User user = this.userDao.readUserById(userId);
-                Participation participation = new Participation(id, conversationId, user, addDate);
+                Participation participation = new Participation(id, conversationId, user, addDate, role);
                 participants.add(participation);
             }
             return participants;
