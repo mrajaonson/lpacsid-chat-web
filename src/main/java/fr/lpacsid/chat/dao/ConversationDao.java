@@ -17,4 +17,6 @@ public interface ConversationDao {
     List<Conversation> readAllUserConversations(Integer userId) throws SQLException;
 
     List<Integer> readAllUserConversationsId(Integer userId) throws SQLException;
+
+    Boolean checkIfConversationExists(Conversation conversation) throws SQLException;
 }

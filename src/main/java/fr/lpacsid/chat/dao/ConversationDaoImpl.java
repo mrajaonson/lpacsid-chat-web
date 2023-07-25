@@ -47,22 +47,26 @@ public class ConversationDaoImpl implements ConversationDao {
     @Override
     public void createConversation(Conversation conversation) throws SQLException {
         try {
+            Boolean exists = this.checkIfConversationExists(conversation);
             this.getConnection();
-            String query = "INSERT INTO conversations(prime, creationDate, label, type) VALUES(?, ?, ?, ?)";
-            this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setInt(1, conversation.getPrime().getId());
-            this.preparedStatement.setString(2, conversation.getCreationDate());
-            this.preparedStatement.setString(3, conversation.getLabel());
-            this.preparedStatement.setString(4, conversation.getTypeString());
+            if (!exists) {
+                String query = "INSERT INTO conversations(prime, creationDate, label, type) VALUES(?, ?, ?, ?)";
+                this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.executeUpdate();
+                this.preparedStatement.setInt(1, conversation.getPrime().getId());
+                this.preparedStatement.setString(2, conversation.getCreationDate());
+                this.preparedStatement.setString(3, conversation.getLabel());
+                this.preparedStatement.setString(4, conversation.getTypeString());
 
-            // Create participants
-            Integer conversationId = this.getConversationId(conversation);
-            for (Participation participation : conversation.getParticipations()) {
-                participation.setConversation(conversationId);
-                this.participationDao.createParticipant(participation);
+                this.preparedStatement.executeUpdate();
+
+                // Create participants
+                Integer conversationId = this.getConversationId(conversation);
+                for (Participation participation : conversation.getParticipations()) {
+                    participation.setConversation(conversationId);
+                    this.participationDao.createParticipant(participation);
+                }
             }
         } catch (SQLException e) {
             Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
@@ -162,6 +166,28 @@ public class ConversationDaoImpl implements ConversationDao {
             this.closeConnection();
         }
         return null;
+    }
+
+    @Override
+    public Boolean checkIfConversationExists(Conversation conversation) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "SELECT 1 AS result FROM participants WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2 LIMIT 1;";
+            this.preparedStatement = this.connection.prepareStatement(query);
+
+            this.preparedStatement.setInt(1, conversation.getParticipations().get(0).getUser().getId());
+            this.preparedStatement.setInt(2, conversation.getParticipations().get(1).getUser().getId());
+
+            ResultSet resultSet = this.preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            this.closeConnection();
+        }
+        return false;
     }
 
     private Integer getConversationId(Conversation conversation) throws SQLException {

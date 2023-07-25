@@ -120,7 +120,6 @@ public class Conversation {
                     .orElse(null);
 
             if (participation != null) {
-                System.out.println("SET LABEL : " + participation.getUser().getLogin());
                 this.label = participation.getUser().getLogin();
             }
         }

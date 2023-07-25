@@ -125,8 +125,9 @@
         <jsp:include page="chatModal.jsp" />
         <div class="col stickyOverflow">
             <%-- Affichage messages --%>
-            <% Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation"); %>
-
+            <%  Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
+                if (currentConversation != null) {
+            %>
             <div class="header">
                 <h4><%= currentConversation.getLabel() %></h4>
             </div>
@@ -162,6 +163,7 @@
                     container.scrollTop = container.scrollHeight;
                 });
             </script>
+            <% } %>
         </div>
     </div>
 </div>
