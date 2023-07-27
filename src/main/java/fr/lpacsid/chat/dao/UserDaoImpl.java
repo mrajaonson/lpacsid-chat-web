@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     public User readUser(String username) throws SQLException {
         try {
             getConnection();
-            String query = "SELECT * FROM users WHERE login = ?";
+            String query = "SELECT id, creationDate, status, lastConnection FROM users WHERE login = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);
@@ -97,7 +99,7 @@ public class UserDaoImpl implements UserDao {
     public boolean validateUser(String username, String password) throws SQLException {
         try {
             getConnection();
-            String query = "SELECT * FROM users WHERE login = ? AND password = ?";
+            String query = "SELECT 1 FROM users WHERE login = ? AND password = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);
@@ -119,7 +121,7 @@ public class UserDaoImpl implements UserDao {
     public User readUserById(Integer id) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT * FROM users WHERE id = ?";
+            String query = "SELECT id, login, creationDate, status, lastConnection FROM users WHERE id = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, id);
@@ -132,6 +134,38 @@ public class UserDaoImpl implements UserDao {
                 String lastConnection = resultSet.getString("lastConnection");
                 return new User(id, login, creationDate, status, lastConnection);
             }
+        } catch (SQLException e) {
+            this.logErrorException(e);
+        } finally {
+            this.closeConnection();
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> readAllUsers(Integer userId) throws SQLException {
+        try {
+            this.getConnection();
+            List<User> users = new ArrayList<>();
+
+            String query = "SELECT id, login, creationDate, status, lastConnection FROM users WHERE id != ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
+
+            this.preparedStatement.setInt(1, userId);
+
+            ResultSet resultSet = this.preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                String login = resultSet.getString("login");
+                String creationDate = resultSet.getString("creationDate");
+                String status = resultSet.getString("status");
+                String lastConnection = resultSet.getString("lastConnection");
+
+                User user = new User(id, login, creationDate, status, lastConnection);
+                users.add(user);
+            }
+
+            return users;
         } catch (SQLException e) {
             this.logErrorException(e);
         } finally {

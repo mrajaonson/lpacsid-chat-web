@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,9 +46,13 @@ public class Home extends HttpServlet {
         if (userSession != null) {
             List<Conversation> conversations;
             try {
-                // Récupération des conversations du user
+                // Get user's conversations
                 conversations = this.conversationDao.readAllUserConversations(userSession.getId());
                 session.setAttribute("userConversations", conversations);
+
+                // Get users list
+                List<User> users = userDao.readAllUsers(userSession.getId());
+                session.setAttribute("users", users);
             } catch (SQLException e) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -74,17 +79,19 @@ public class Home extends HttpServlet {
             // Create conversation form
             String addContactForm = request.getParameter("addContact");
             if (addContactForm != null) {
-                String userSearch = request.getParameter("userSearch");
-                User userParticipant = userDao.readUser(userSearch);
-                // Vérification si User existe
-                if (userParticipant != null) {
+                String selectedParticipant = request.getParameter("selectedParticipant");
+                if (!Objects.equals(selectedParticipant, "")) {
+                    Integer participantId = Integer.valueOf(selectedParticipant);
+                    User userParticipant = userDao.readUserById(participantId);
+
                     Conversation conversation = new Conversation(userSession, ConversationTypes.DISCUSSION);
                     conversation.addParticipant(userParticipant);
                     conversationDao.createConversation(conversation);
+
+                    // Récupération des conversations du user
+                    List<Conversation> conversations = this.conversationDao.readAllUserConversations(userSession.getId());
+                    session.setAttribute("userConversations", conversations);
                 }
-                // Récupération des conversations du user
-                List<Conversation> conversations = this.conversationDao.readAllUserConversations(userSession.getId());
-                session.setAttribute("userConversations", conversations);
             }
 
             // Display conversation form

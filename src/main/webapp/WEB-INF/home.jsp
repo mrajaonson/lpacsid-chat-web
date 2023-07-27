@@ -7,6 +7,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="fr.lpacsid.chat.beans.Conversation" %>
 <%@ page import="fr.lpacsid.chat.beans.Message" %>
+<%@ page import="fr.lpacsid.chat.beans.User" %>
 <%@ page import="java.util.Objects" %>
 <html>
 <head>

@@ -3,6 +3,7 @@ package fr.lpacsid.chat.dao;
 import fr.lpacsid.chat.beans.User;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface UserDao {
 
@@ -17,4 +18,6 @@ public interface UserDao {
     void deleteUser(String username);
 
     boolean validateUser(String username, String password) throws SQLException;
+
+    List<User> readAllUsers(Integer userId) throws SQLException;
 }

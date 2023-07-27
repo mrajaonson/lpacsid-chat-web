@@ -3,6 +3,9 @@
   Date: 21/06/2023
   Time: 01:22
 --%>
+<%@ page import="java.util.List" %>
+<%@ page import="fr.lpacsid.chat.beans.User" %>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -15,8 +18,16 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="userSearch" name="userSearch"
-                           placeholder="Saisir un nom d'utilisateur">
+                    <select name="selectedParticipant" class="form-select form-select-sm" aria-label="Small select example">
+                        <option selected></option>
+                        <%
+                            List<User> users = (List<User>) request.getSession().getAttribute("users");
+                            if (users != null) {
+                                for (User user: users) {
+                        %>
+                            <option value="<%= user.getId() %>"><%= user.getLogin() %></option>"
+                        <% } } %>
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
