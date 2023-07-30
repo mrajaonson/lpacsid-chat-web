@@ -106,15 +106,15 @@
                             assert conversations != null;
                             Conversation getCurrentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
                             for (Conversation conversation : conversations) {
+                                String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                         %>
                             <form action="Home" method="post" id="<%= conversation.getId() %>">
                                 <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
                                 <button
                                         type="submit"
-                                        class="btn list-group-item-action p-0"
+                                        class="btn list-group-item-action p-0 <%= buttonClass %>"
                                         name="setCurrentConversationId">
                                     <%= conversation.getLabel() %>
-<%--                                    <%= Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "" %>--%>
                                 </button>
                             </form>
                         <% } %>
