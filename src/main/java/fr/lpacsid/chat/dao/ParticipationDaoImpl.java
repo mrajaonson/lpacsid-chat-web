@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ParticipantDaoImpl implements ParticipantDao {
+public class ParticipationDaoImpl implements ParticipationDao {
 
     private final DaoFactory daoFactory;
     private Connection connection;
     private PreparedStatement preparedStatement;
     private final UserDao userDao;
 
-    public ParticipantDaoImpl(DaoFactory daoFactory) {
+    public ParticipationDaoImpl(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
         this.userDao = this.daoFactory.getUserDao();
     }
@@ -42,11 +42,11 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public void createParticipant(Participation participation) throws SQLException {
+    public void createParticipation(Participation participation) throws SQLException {
         try {
             this.getConnection();
 
-            String query = "INSERT INTO participants(conversation, user, addDate, role) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO participations(conversation, user, addDate, role) VALUES (?, ?, ?, ?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, participation.getConversation());
@@ -63,11 +63,11 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public Participation readParticipant(Integer conversationId, Integer userId) throws SQLException {
+    public Participation readParticipation(Integer conversationId, Integer userId) throws SQLException {
         try {
             this.getConnection();
 
-            String query = "SELECT * FROM participants WHERE conversation = ? AND user = ?";
+            String query = "SELECT * FROM participations WHERE conversation = ? AND user = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, conversationId);
@@ -93,22 +93,22 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public void updateParticipant(Participation participation) throws SQLException {
+    public void updateParticipation(Participation participation) throws SQLException {
 
     }
 
     @Override
-    public void deleteParticipant(Integer id) throws SQLException {
+    public void deleteParticipation(Integer id) throws SQLException {
 
     }
 
     @Override
-    public List<Participation> readAllConversationParticipants(Integer conversationId) throws SQLException {
+    public List<Participation> readAllConversationParticipations(Integer conversationId) throws SQLException {
         try {
             this.getConnection();
-            List<Participation> participants = new ArrayList<>();
+            List<Participation> participations = new ArrayList<>();
 
-            String query = "SELECT * FROM participants WHERE conversation = ?";
+            String query = "SELECT * FROM participations WHERE conversation = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, conversationId);
@@ -123,9 +123,9 @@ public class ParticipantDaoImpl implements ParticipantDao {
 
                 User user = this.userDao.readUserById(userId);
                 Participation participation = new Participation(id, conversationId, user, addDate, role);
-                participants.add(participation);
+                participations.add(participation);
             }
-            return participants;
+            return participations;
         } catch (SQLException e) {
             this.logErrorException(e);
         } finally {

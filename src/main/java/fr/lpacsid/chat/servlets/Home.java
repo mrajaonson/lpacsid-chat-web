@@ -121,7 +121,7 @@ public class Home extends HttpServlet {
 
                 assert userSession != null;
                 if (!messageInput.equals("")) {
-                    Message message = new Message(currentConversationObj.getId(), userSession.getId(), messageInput);
+                    Message message = new Message(currentConversationObj.getId(), userSession, messageInput);
                     messageDao.createMessage(message);
 
                     // Refresh messages list

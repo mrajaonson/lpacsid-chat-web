@@ -25,7 +25,7 @@
                             if (users != null) {
                                 for (User user: users) {
                         %>
-                            <option value="<%= user.getId() %>"><%= user.getLogin() %></option>"
+                            <option value="<%= user.getId() %>"><%= user.getUsername() %></option>"
                         <% } } %>
                     </select>
                 </div>

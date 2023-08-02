@@ -5,13 +5,13 @@ GRANT ALL PRIVILEGES ON `chat`.* TO 'chat'@'%';
 
 CREATE TABLE `chat`.`users` (
     `id` INT NOT NULL AUTO_INCREMENT ,
-    `login` VARCHAR(50) NOT NULL ,
+    `username` VARCHAR(50) NOT NULL ,
     `password` VARCHAR(128) NOT NULL ,
     `creationDate` VARCHAR(50) NOT NULL ,
     `status` VARCHAR(50) NOT NULL ,
     `lastConnection` VARCHAR(50) NOT NULL ,
     PRIMARY KEY (`id`),
-    UNIQUE `LOGIN` (`login`(50))
+    UNIQUE `USERNAME` (`username`(50))
 ) ENGINE = InnoDB;
 
 CREATE TABLE `chat`.`conversations` (
@@ -27,12 +27,12 @@ CREATE TABLE `chat`.`messages` (
     `id` INT NOT NULL AUTO_INCREMENT ,
     `conversation` INT NOT NULL ,
     `sender` INT NOT NULL ,
-    `dateSent` VARCHAR(50) NOT NULL ,
+    `date` VARCHAR(50) NOT NULL ,
     `content` VARCHAR(10000) NOT NULL ,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `chat`.`participants` (
+CREATE TABLE `chat`.`participations` (
     `id` INT NOT NULL AUTO_INCREMENT ,
     `conversation` INT NOT NULL ,
     `user` INT NOT NULL ,

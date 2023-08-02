@@ -18,7 +18,7 @@ public class ConversationDaoImpl implements ConversationDao {
     private final DaoFactory daoFactory;
     private Connection connection;
     private PreparedStatement preparedStatement;
-    private final ParticipantDao participationDao;
+    private final ParticipationDao participationDao;
     private final UserDao userDao;
 
     public ConversationDaoImpl(DaoFactory daoFactory) {
@@ -61,11 +61,11 @@ public class ConversationDaoImpl implements ConversationDao {
 
                 this.preparedStatement.executeUpdate();
 
-                // Create participants
+                // Create participations
                 Integer conversationId = this.getConversationId(conversation);
                 for (Participation participation : conversation.getParticipations()) {
                     participation.setConversation(conversationId);
-                    this.participationDao.createParticipant(participation);
+                    this.participationDao.createParticipation(participation);
                 }
             }
         } catch (SQLException e) {
@@ -93,9 +93,9 @@ public class ConversationDaoImpl implements ConversationDao {
                 String type = resultSet.getString("type");
 
                 User prime = this.userDao.readUserById(primeId);
-                List<Participation> participants = this.participationDao.readAllConversationParticipants(id);
+                List<Participation> participations = this.participationDao.readAllConversationParticipations(id);
 
-                return new Conversation(id, prime, creationDate, participants, label, type);
+                return new Conversation(id, prime, creationDate, participations, label, type);
             }
         } catch (SQLException e) {
             Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
@@ -145,7 +145,7 @@ public class ConversationDaoImpl implements ConversationDao {
 
             List<Integer> userConversationsId = new ArrayList<>();
 
-            String query = "SELECT * FROM participants WHERE user = ? ";
+            String query = "SELECT * FROM participations WHERE user = ? ";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, userId);
@@ -172,7 +172,7 @@ public class ConversationDaoImpl implements ConversationDao {
     public Boolean checkIfConversationExists(Conversation conversation) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT 1 AS result FROM participants WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2 LIMIT 1;";
+            String query = "SELECT 1 AS result FROM participations WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2 LIMIT 1;";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, conversation.getParticipations().get(0).getUser().getId());

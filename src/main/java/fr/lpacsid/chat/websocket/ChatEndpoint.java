@@ -7,10 +7,12 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.beans.Message;
 import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
+
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -47,14 +49,14 @@ public class ChatEndpoint {
 
         Message message = new Message();
         message.initDate();
-        message.setFrom(username);
+        message.setSender(user);
         message.setContent("Connected " + username);
         broadcast(message);
     }
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
-        message.setFrom(users.get(session.getId()).getLogin());
+        message.setSender(users.get(session.getId()));
         message.initDate();
         broadcast(message);
     }
@@ -64,7 +66,7 @@ public class ChatEndpoint {
         chatEndpoints.remove(this);
         Message message = new Message();
         message.initDate();
-        message.setFrom(users.get(session.getId()).getLogin());
+        message.setSender(users.get(session.getId()));
         message.setContent("Disconnected!");
         broadcast(message);
     }

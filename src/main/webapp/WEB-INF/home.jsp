@@ -56,7 +56,7 @@
         <a class="navbar-brand" href="">Express Chat</a>
         <div class="navbar-brand">
             <span>- Bienvenue</span>
-            <span id="userSessionName"><%= userSession.getLogin() %></span>
+            <span id="userSessionName"><%= userSession.getUsername() %></span>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -144,8 +144,8 @@
                 <% for (Message currentMessage : currentConversation.getMessages()) { %>
                 <div class="alert alert-light p-1">
                     <p class="card-title">
-                        <strong><%= currentMessage.getSenderName() %></strong>
-                        <small> - <%= currentMessage.getDateSent() %></small>
+                        <strong><%= currentMessage.getSender().getUsername() %></strong>
+                        <small> - <%= currentMessage.getDate() %></small>
                     </p>
                     <p class="card-text"><%= currentMessage.getContent() %></p>
                 </div>

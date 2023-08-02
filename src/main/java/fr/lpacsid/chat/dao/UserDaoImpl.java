@@ -42,10 +42,10 @@ public class UserDaoImpl implements UserDao {
     public void createUser(User user) throws SQLException {
         try {
             getConnection();
-            String query = "INSERT INTO users(login, password, creationDate, status, lastConnection) VALUES(?, ?, ?, ?,?)";
+            String query = "INSERT INTO users(username, password, creationDate, status, lastConnection) VALUES(?, ?, ?, ?,?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
-            this.preparedStatement.setString(1, user.getLogin());
+            this.preparedStatement.setString(1, user.getUsername());
             this.preparedStatement.setString(2, user.getPassword());
             this.preparedStatement.setString(3, user.getCreationDate());
             this.preparedStatement.setString(4, user.getStatusString());
@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     public User readUser(String username) throws SQLException {
         try {
             getConnection();
-            String query = "SELECT id, creationDate, status, lastConnection FROM users WHERE login = ?";
+            String query = "SELECT id, creationDate, status, lastConnection FROM users WHERE username = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);
@@ -99,7 +99,7 @@ public class UserDaoImpl implements UserDao {
     public boolean validateUser(String username, String password) throws SQLException {
         try {
             getConnection();
-            String query = "SELECT 1 FROM users WHERE login = ? AND password = ?";
+            String query = "SELECT 1 FROM users WHERE username = ? AND password = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);
@@ -121,18 +121,18 @@ public class UserDaoImpl implements UserDao {
     public User readUserById(Integer id) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT id, login, creationDate, status, lastConnection FROM users WHERE id = ?";
+            String query = "SELECT id, username, creationDate, status, lastConnection FROM users WHERE id = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, id);
 
             ResultSet resultSet = this.preparedStatement.executeQuery();
             if (resultSet.next()) {
-                String login = resultSet.getString("login");
+                String username = resultSet.getString("username");
                 String creationDate = resultSet.getString("creationDate");
                 String status = resultSet.getString("status");
                 String lastConnection = resultSet.getString("lastConnection");
-                return new User(id, login, creationDate, status, lastConnection);
+                return new User(id, username, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
             this.logErrorException(e);
@@ -148,7 +148,7 @@ public class UserDaoImpl implements UserDao {
             this.getConnection();
             List<User> users = new ArrayList<>();
 
-            String query = "SELECT id, login, creationDate, status, lastConnection FROM users WHERE id != ?";
+            String query = "SELECT id, username, creationDate, status, lastConnection FROM users WHERE id != ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, userId);
@@ -156,12 +156,12 @@ public class UserDaoImpl implements UserDao {
             ResultSet resultSet = this.preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Integer id = resultSet.getInt("id");
-                String login = resultSet.getString("login");
+                String username = resultSet.getString("username");
                 String creationDate = resultSet.getString("creationDate");
                 String status = resultSet.getString("status");
                 String lastConnection = resultSet.getString("lastConnection");
 
-                User user = new User(id, login, creationDate, status, lastConnection);
+                User user = new User(id, username, creationDate, status, lastConnection);
                 users.add(user);
             }
 

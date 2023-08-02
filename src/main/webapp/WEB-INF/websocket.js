@@ -27,7 +27,7 @@ function connect() {
 
         // Create a new strong element and set its content to "title"
         const strongElement = document.createElement('strong');
-        strongElement.textContent = message.from;
+        strongElement.textContent = message.sender.username;
 
         // Create a new small element and set its content to " - subtitle"
         const smallElement = document.createElement('small');
@@ -62,7 +62,6 @@ function connect() {
 function send() {
     const content = document.getElementById("messageInput").value;
     const json = JSON.stringify({
-        "from": "",
         "content": content
     });
 

@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class User {
     private Integer id;
-    private String login;
+    private String username;
     private String password;
     private String creationDate;
     private UserStatus status;
@@ -23,12 +23,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -92,21 +92,21 @@ public class User {
         this.lastConnection = DateUtility.getLocalDateTimeNowToString();
     }
 
-    public User(String login, String password) {
-        this.login = login;
+    public User(String username, String password) {
+        this.username = username;
         this.password = password;
         this.initCreationDate();
         this.initLastConnection();
         this.status = UserStatus.OFFLINE;
     }
 
-    public User(String login) {
-        this.login = login;
+    public User(String username) {
+        this.username = username;
     }
 
-    public User(Integer id, String login, String creationDate, String status, String lastConnection) {
+    public User(Integer id, String username, String creationDate, String status, String lastConnection) {
         this.id = id;
-        this.login = login;
+        this.username = username;
         this.creationDate = creationDate;
         this.setStatusFromStringValue(status);
         this.lastConnection = lastConnection;

@@ -120,7 +120,7 @@ public class Conversation {
                     .orElse(null);
 
             if (participation != null) {
-                this.label = participation.getUser().getLogin();
+                this.label = participation.getUser().getUsername();
             }
         }
     }

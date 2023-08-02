@@ -43,12 +43,12 @@ public class MessageDaoImpl implements MessageDao {
     public void createMessage(Message message) throws SQLException {
         try {
             this.getConnection();
-            String query = "INSERT INTO messages(conversation, sender, dateSent, content) VALUES (?,?,?,?)";
+            String query = "INSERT INTO messages(conversation, sender, date, content) VALUES (?,?,?,?)";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, message.getConversation());
-            this.preparedStatement.setInt(2, message.getSender());
-            this.preparedStatement.setString(3, message.getDateSent());
+            this.preparedStatement.setInt(2, message.getSender().getId());
+            this.preparedStatement.setString(3, message.getDate());
             this.preparedStatement.setString(4, message.getContent());
 
             this.preparedStatement.executeUpdate();
@@ -63,19 +63,23 @@ public class MessageDaoImpl implements MessageDao {
     public Message readMessage(Integer id) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT * FROM messages WHERE id = ?";
+            String query = "SELECT * sender messages WHERE id = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, id);
             ResultSet resultSet = this.preparedStatement.executeQuery();
 
+            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
+
             if (resultSet.next()) {
                 Integer conversation = resultSet.getInt("conversation");
                 Integer sender = resultSet.getInt("sender");
-                String dateSent = resultSet.getString("dateSent");
+                String date = resultSet.getString("date");
                 String content = resultSet.getString("content");
 
-                return new Message(conversation, sender, dateSent, content);
+                User user = userDao.readUserById(sender);
+
+                return new Message(conversation, user, date, content);
             }
         } catch (SQLException e) {
             this.logErrorException(e);
@@ -106,18 +110,17 @@ public class MessageDaoImpl implements MessageDao {
 
             this.preparedStatement.setInt(1, conversation);
 
-            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
-
             ResultSet resultSet = this.preparedStatement.executeQuery();
+
+            UserDaoImpl userDao = new UserDaoImpl(daoFactory);
 
             while (resultSet.next()) {
                 Integer sender = resultSet.getInt("sender");
-                String dateSent = resultSet.getString("dateSent");
+                String date = resultSet.getString("date");
                 String content = resultSet.getString("content");
 
                 User user = userDao.readUserById(sender);
-                Message message = new Message(conversation, sender, dateSent, content);
-                message.setSenderName(user.getLogin());
+                Message message = new Message(conversation, user, date, content);
 
                 messages.add(message);
             }

@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.websocket;
 
 import com.google.gson.Gson;
+import fr.lpacsid.chat.beans.Message;
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.Encoder;
 import jakarta.websocket.EndpointConfig;

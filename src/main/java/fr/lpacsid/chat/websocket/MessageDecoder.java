@@ -1,5 +1,6 @@
 package fr.lpacsid.chat.websocket;
 
+import fr.lpacsid.chat.beans.Message;
 import jakarta.websocket.DecodeException;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.EndpointConfig;

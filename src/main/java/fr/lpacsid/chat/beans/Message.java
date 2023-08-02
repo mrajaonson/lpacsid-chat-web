@@ -5,27 +5,33 @@ import fr.lpacsid.chat.utils.DateUtility;
 public class Message {
     private Integer id;
     private Integer conversation;
-    private Integer sender;
-    private String dateSent;
+    private User sender;
+    private String date;
     private String content;
-    private String senderName;
 
-    public Message(Integer conversation, Integer sender, String content) {
+    public Message(Integer conversation, User sender, String content) {
         this.conversation = conversation;
         this.sender = sender;
         this.content = content;
-        this.initDateSent();
+        this.initDate();
     }
 
-    public Message(Integer conversation, Integer sender, String dateSent, String content) {
+    public Message(Integer conversation, User sender, String date, String content) {
         this.conversation = conversation;
         this.sender = sender;
-        this.dateSent = dateSent;
+        this.date = date;
         this.content = content;
+    }
+
+    public Message() {
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getConversation() {
@@ -36,39 +42,31 @@ public class Message {
         this.conversation = conversation;
     }
 
-    public Integer getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(Integer sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 
-    public String getDateSent() {
-        return dateSent;
+    public String getDate() {
+        return date;
     }
 
-    public void setDateSent(String dateSent) {
-        this.dateSent = dateSent;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getContent() {
         return content;
     }
 
-    public String getSenderName() {
-        return this.senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void initDateSent() {
-        this.dateSent = DateUtility.getLocalDateTimeNowToString();
+    public void initDate() {
+        this.date = DateUtility.getLocalDateTimeNowToString();
     }
 }

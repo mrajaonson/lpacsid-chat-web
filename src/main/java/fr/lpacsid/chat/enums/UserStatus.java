@@ -5,7 +5,8 @@ public enum UserStatus {
     BUSY("Busy", "Occupé"),
     DO_NOT_DISTURB("Do not disturb", "Ne pas déranger"),
     ABSENT("Absent", "Absent"),
-    OFFLINE("Offline", "Hors ligne");
+    OFFLINE("Offline", "Hors ligne"),
+    DELETED("Deleted", "Supprimé");
 
     private final String en;
     private final String fr;

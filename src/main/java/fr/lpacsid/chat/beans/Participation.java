@@ -9,11 +9,15 @@ public class Participation {
     private Integer id;
     private Integer conversation;
     private String addDate;
-    private final User user;
+    private User user;
     private RoleConversation role;
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getConversation() {
@@ -24,16 +28,24 @@ public class Participation {
         this.conversation = conversation;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public String getAddDate() {
         return addDate;
     }
 
+    public void setAddDate(String addDate) {
+        this.addDate = addDate;
+    }
+
     public void initAddDate() {
         this.addDate = DateUtility.getLocalDateTimeNowToString();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public RoleConversation getRole() {
