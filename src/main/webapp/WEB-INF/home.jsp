@@ -138,6 +138,7 @@
                 if (currentConversation != null) {
             %>
             <div class="header">
+                <div style="display: none" id="currentConversationId"><%= currentConversation.getId() %></div>
                 <h4><%= currentConversation.getLabel() %></h4>
             </div>
             <div class="content p-2" id="messagesContainer">
@@ -154,7 +155,14 @@
             <div class="footer">
 <%--                <form action="Home" method="post">--%>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="messageInput" name="messageInput" placeholder="Message" autocomplete="off">
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="messageInput"
+                                name="messageInput"
+                                placeholder="Message"
+                                autocomplete="off"
+                                onkeypress="return runSendMessage(event)">
 <%--                        <button class="btn btn-outline-secondary" type="submit" name="sendMessage">Envoyer</button>--%>
                         <button class="btn btn-outline-secondary" onclick="send();" name="sendMessage">Envoyer</button>
                     </div>

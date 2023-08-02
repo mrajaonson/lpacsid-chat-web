@@ -47,28 +47,33 @@ public class ChatEndpoint {
         User user = this.userDao.readUser(username);
         users.put(session.getId(), user);
 
-        Message message = new Message();
-        message.initDate();
-        message.setSender(user);
-        message.setContent("Connected " + username);
-        broadcast(message);
+//        Message message = new Message();
+//        message.initDate();
+//        message.setSender(user);
+//        message.setContent("Connected " + username);
+//
+//        broadcast(message);
     }
 
     @OnMessage
-    public void onMessage(Session session, Message message) throws IOException, EncodeException {
+    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
         message.setSender(users.get(session.getId()));
         message.initDate();
+
+        // Persist
+        this.messageDao.createMessage(message);
+
         broadcast(message);
     }
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
         chatEndpoints.remove(this);
-        Message message = new Message();
-        message.initDate();
-        message.setSender(users.get(session.getId()));
-        message.setContent("Disconnected!");
-        broadcast(message);
+//        Message message = new Message();
+//        message.initDate();
+//        message.setSender(users.get(session.getId()));
+//        message.setContent("Disconnected!");
+//        broadcast(message);
     }
 
     @OnError
