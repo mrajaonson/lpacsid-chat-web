@@ -16,7 +16,7 @@ CREATE TABLE `chat`.`users` (
 
 CREATE TABLE `chat`.`conversations` (
     `id` INT NOT NULL AUTO_INCREMENT ,
-    `admin` VARCHAR(50) NOT NULL ,
+    `prime` VARCHAR(50) NOT NULL ,
     `creationDate` VARCHAR(50) NOT NULL ,
     `label` VARCHAR(50) NOT NULL ,
     `type` VARCHAR(50) NOT NULL ,
@@ -37,5 +37,6 @@ CREATE TABLE `chat`.`participants` (
     `conversation` INT NOT NULL ,
     `user` INT NOT NULL ,
     `addDate` VARCHAR(50) NOT NULL ,
+    `role` VARCHAR(50) NOT NULL ,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
