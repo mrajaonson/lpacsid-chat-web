@@ -1,10 +1,16 @@
 package fr.lpacsid.chat.websocket;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.dao.ConversationDao;
+import fr.lpacsid.chat.dao.DaoFactory;
+import fr.lpacsid.chat.dao.MessageDao;
+import fr.lpacsid.chat.dao.UserDao;
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -18,13 +24,26 @@ import jakarta.websocket.server.ServerEndpoint;
 public class ChatEndpoint {
     private Session session;
     private static final Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
-    private static final HashMap<String, String> users = new HashMap<>();
+    private static final HashMap<String, User> users = new HashMap<>();
+
+    private final UserDao userDao;
+    private final ConversationDao conversationDao;
+    private final MessageDao messageDao;
+
+    public ChatEndpoint() {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.userDao = daoFactory.getUserDao();
+        this.conversationDao = daoFactory.getConversationDao();
+        this.messageDao = daoFactory.getMessageDao();
+    }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
+    public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException, SQLException {
         this.session = session;
         chatEndpoints.add(this);
-        users.put(session.getId(), username);
+
+        User user = this.userDao.readUser(username);
+        users.put(session.getId(), user);
 
         Message message = new Message();
         message.initDate();
@@ -35,7 +54,7 @@ public class ChatEndpoint {
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
-        message.setFrom(users.get(session.getId()));
+        message.setFrom(users.get(session.getId()).getLogin());
         message.initDate();
         broadcast(message);
     }
@@ -45,7 +64,7 @@ public class ChatEndpoint {
         chatEndpoints.remove(this);
         Message message = new Message();
         message.initDate();
-        message.setFrom(users.get(session.getId()));
+        message.setFrom(users.get(session.getId()).getLogin());
         message.setContent("Disconnected!");
         broadcast(message);
     }

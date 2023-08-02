@@ -52,7 +52,12 @@
 
 <nav class="navbar navbar-expand-md fixed-top bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Express Chat</a>
+        <% User userSession = (User) request.getSession().getAttribute("userSession");%>
+        <a class="navbar-brand" href="">Express Chat</a>
+        <div class="navbar-brand">
+            <span>- Bienvenue</span>
+            <span id="userSessionName"><%= userSession.getLogin() %></span>
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -133,8 +138,6 @@
                 if (currentConversation != null) {
             %>
             <div class="header">
-                <% User userSession = (User) request.getSession().getAttribute("userSession");%>
-                <div style="display: none" id="userSessionName"><%= userSession.getLogin() %></div>
                 <h4><%= currentConversation.getLabel() %></h4>
             </div>
             <div class="content p-2" id="messagesContainer">
