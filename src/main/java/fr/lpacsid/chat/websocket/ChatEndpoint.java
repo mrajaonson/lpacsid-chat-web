@@ -27,6 +27,7 @@ public class ChatEndpoint {
         users.put(session.getId(), username);
 
         Message message = new Message();
+        message.initDate();
         message.setFrom(username);
         message.setContent("Connected " + username);
         broadcast(message);
@@ -43,6 +44,7 @@ public class ChatEndpoint {
     public void onClose(Session session) throws IOException, EncodeException {
         chatEndpoints.remove(this);
         Message message = new Message();
+        message.initDate();
         message.setFrom(users.get(session.getId()));
         message.setContent("Disconnected!");
         broadcast(message);

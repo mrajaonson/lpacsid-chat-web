@@ -1,7 +1,11 @@
 let ws;
 
+window.onload = function () {
+    connect()
+}
+
 function connect() {
-    const username = document.getElementById("username").value;
+    const username = document.getElementById("userSessionName").textContent;
 
     const host = document.location.host;
     // const pathname = document.location.pathname;
@@ -10,16 +14,55 @@ function connect() {
     ws = new WebSocket("ws://" +host  + pathname + "/chat/" + username);
 
     ws.onmessage = function(event) {
-        const log = document.getElementById("log");
-        console.log(event.data);
+        const messagesContainer = document.getElementById("messagesContainer");
         const message = JSON.parse(event.data);
-        log.innerHTML += message.from + " : " + message.content + "\n";
+
+        // Create a new div element with class "alert alert-light p-1"
+        const newDiv = document.createElement('div');
+        newDiv.className = 'alert alert-light p-1';
+
+        // Create a new p element with class "card-title"
+        const cardTitleElement = document.createElement('p');
+        cardTitleElement.className = 'card-title';
+
+        // Create a new strong element and set its content to "title"
+        const strongElement = document.createElement('strong');
+        strongElement.textContent = message.from;
+
+        // Create a new small element and set its content to " - subtitle"
+        const smallElement = document.createElement('small');
+        smallElement.textContent = ' - ' + message.date;
+
+        // Append the strong and small elements to the cardTitleElement
+        cardTitleElement.appendChild(strongElement);
+        cardTitleElement.appendChild(smallElement);
+
+        // Create a new p element with class "card-text" and set its content to "text"
+        const cardTextElement = document.createElement('p');
+        cardTextElement.className = 'card-text';
+        cardTextElement.textContent = message.content;
+
+        // Append the cardTitleElement and cardTextElement to the newDiv
+        newDiv.appendChild(cardTitleElement);
+        newDiv.appendChild(cardTextElement);
+
+        // Append the new div to the container
+        messagesContainer.appendChild(newDiv);
+
+        // Scroll the container to the bottom on page load
+        const container = document.getElementById('messagesContainer');
+        container.scrollTop = container.scrollHeight;
+
+        // Clear the input
+        const content = document.getElementById("messageInput")
+        content.value = ''
     };
 }
 
 function send() {
-    const content = document.getElementById("msg").value;
+    const content = document.getElementById("messageInput").value;
     const json = JSON.stringify({
+        "from": "",
         "content": content
     });
 
