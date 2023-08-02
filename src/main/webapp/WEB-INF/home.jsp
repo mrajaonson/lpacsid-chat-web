@@ -188,6 +188,7 @@
                 function send() {
                     const content = document.getElementById("messageInput").value;
                     const json = JSON.stringify({
+                        "from": "",
                         "content": content
                     });
 

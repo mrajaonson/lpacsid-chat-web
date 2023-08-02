@@ -5,6 +5,7 @@ public class Message {
     private String to;
     private String content;
     private String date;
+    private String type;
 
     @Override
     public String toString() {

@@ -18,13 +18,18 @@ import jakarta.websocket.server.ServerEndpoint;
 public class ChatEndpoint {
     private Session session;
     private static final Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
-    private static HashMap<String, String> users = new HashMap<>();
+    private static final HashMap<String, String> users = new HashMap<>();
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
         this.session = session;
         chatEndpoints.add(this);
         users.put(session.getId(), username);
+
+        Message message = new Message();
+        message.setFrom(username);
+        message.setContent("Connected " + username);
+        broadcast(message);
     }
 
     @OnMessage
