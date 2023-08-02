@@ -35,6 +35,7 @@ public class ChatEndpoint {
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
         message.setFrom(users.get(session.getId()));
+        message.initDate();
         broadcast(message);
     }
 

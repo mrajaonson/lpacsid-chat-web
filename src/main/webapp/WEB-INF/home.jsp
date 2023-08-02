@@ -157,7 +157,8 @@
 
                         // Create a new small element and set its content to " - subtitle"
                         const smallElement = document.createElement('small');
-                        smallElement.textContent = ' - ' + message.from;
+                        const messageDate = message.date || ''
+                        smallElement.textContent = ' - ' + messageDate;
 
                         // Append the strong and small elements to the cardTitleElement
                         cardTitleElement.appendChild(strongElement);

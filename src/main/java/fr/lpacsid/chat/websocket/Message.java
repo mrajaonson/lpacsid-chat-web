@@ -1,5 +1,7 @@
 package fr.lpacsid.chat.websocket;
 
+import fr.lpacsid.chat.utils.DateUtility;
+
 public class Message {
     private String from;
     private String to;
@@ -34,5 +36,25 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void initDate() {
+        this.date = DateUtility.getLocalDateTimeNowToString();
     }
 }

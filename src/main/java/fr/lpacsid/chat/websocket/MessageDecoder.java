@@ -8,12 +8,11 @@ import com.google.gson.Gson;
 
 public class MessageDecoder implements Decoder.Text<Message> {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @Override
     public Message decode(String s) throws DecodeException {
-        Message message = gson.fromJson(s, Message.class);
-        return message;
+        return gson.fromJson(s, Message.class);
     }
 
     @Override

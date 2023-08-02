@@ -8,12 +8,11 @@ import jakarta.websocket.EndpointConfig;
 
 public class MessageEncoder implements Encoder.Text<Message> {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @Override
     public String encode(Message message) throws EncodeException {
-        String json = gson.toJson(message);
-        return json;
+        return gson.toJson(message);
     }
 
     @Override
