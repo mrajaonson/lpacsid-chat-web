@@ -85,6 +85,18 @@ public class Conversation {
         this.creationDate = DateUtility.getLocalDateTimeNowToString();
     }
 
+    public Boolean isChannel() {
+        return this.type.equals(ConversationTypes.CHANNEL);
+    }
+
+    public Boolean isGroup() {
+        return this.type.equals(ConversationTypes.GROUP);
+    }
+
+    public Boolean isDiscussion() {
+        return this.type.equals(ConversationTypes.DISCUSSION);
+    }
+
     public Conversation(Integer id, User prime, String creationDate, List<Participation> participations, String label, String type) {
         this.id = id;
         this.prime = prime;
@@ -113,7 +125,7 @@ public class Conversation {
     }
 
     public void setDiscussionLabel(Integer userId) {
-        if (this.type.equals(ConversationTypes.DISCUSSION)) {
+        if (this.isDiscussion()) {
             Participation participation = this.participations.stream()
                     .filter(i -> !Objects.equals(i.getUser().getId(), userId))
                     .findFirst()
@@ -122,6 +134,11 @@ public class Conversation {
             if (participation != null) {
                 this.label = participation.getUser().getUsername();
             }
+        } else if (this.isChannel()) {
+            this.label = ConversationTypes.CHANNEL.getFr() + " #" +this.id;
+        } else {
+            this.label = ConversationTypes.GROUP.getFr() + " #" +this.id;
+
         }
     }
 }

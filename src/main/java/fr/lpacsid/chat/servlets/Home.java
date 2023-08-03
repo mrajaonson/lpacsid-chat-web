@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -76,9 +77,46 @@ public class Home extends HttpServlet {
                 context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
             }
 
-            // Create conversation form
-            String addContactForm = request.getParameter("addContact");
-            if (addContactForm != null) {
+            // Create channel form
+            String createChannelForm = request.getParameter("createChannel");
+            if (createChannelForm != null) {
+                String[] channelSelectedUsers = request.getParameterValues("channelSelectedUsers");
+                if (channelSelectedUsers != null) {
+                    Conversation conversation = new Conversation(userSession, ConversationTypes.CHANNEL);
+                    for (String userId : channelSelectedUsers) {
+                        User userParticipant = userDao.readUserById(Integer.valueOf(userId));
+                        conversation.addParticipant(userParticipant);
+                    }
+                    conversationDao.createConversation(conversation);
+
+                    // Récupération des conversations du user
+                    List<Conversation> conversations = this.conversationDao.readAllUserConversations(userSession.getId());
+                    session.setAttribute("userConversations", conversations);
+                }
+            }
+
+            // Create group form
+            String createGroupForm = request.getParameter("createGroup");
+            if (createGroupForm != null) {
+                String[] groupSelectedUsers = request.getParameterValues("groupSelectedUsers");
+                if (groupSelectedUsers != null) {
+                    Conversation conversation = new Conversation(userSession, ConversationTypes.GROUP);
+                    for (String userId : groupSelectedUsers) {
+                        User userParticipant = userDao.readUserById(Integer.valueOf(userId));
+                        conversation.addParticipant(userParticipant);
+                    }
+                    conversationDao.createConversation(conversation);
+
+                    // Récupération des conversations du user
+                    List<Conversation> conversations = this.conversationDao.readAllUserConversations(userSession.getId());
+                    session.setAttribute("userConversations", conversations);
+                }
+            }
+
+
+            // Create discussion form
+            String createDiscussionForm = request.getParameter("createDiscussion");
+            if (createDiscussionForm != null) {
                 String selectedParticipant = request.getParameter("selectedParticipant");
                 if (!Objects.equals(selectedParticipant, "")) {
                     Integer participantId = Integer.valueOf(selectedParticipant);

@@ -75,25 +75,58 @@
 <div class="container-fluid h-100" style="padding-top: 4.5rem">
     <div class="row h-100">
         <div class="col-2 stickyOverflow">
+            <%
+                List<Conversation> userConversations = (List<Conversation>) request.getSession().getAttribute("userConversations");
+                assert userConversations != null;
+                Conversation getCurrentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
+            %>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
                         Canaux
                         <div class="col-2">
-                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#channelModal">+</button>
                         </div>
                     </h6>
                     <ul class="list-group list-group-flush">
+                        <% for (Conversation conversation : userConversations) {
+                            String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
+                            if (conversation.isChannel()) {
+                        %>
+                        <form action="Home" method="post" id="<%= conversation.getId() %>">
+                            <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
+                            <button
+                                    type="submit"
+                                    class="btn list-group-item-action p-0 <%= buttonClass %>"
+                                    name="setCurrentConversationId">
+                                <%= conversation.getLabel() %>
+                            </button>
+                        </form>
+                        <% } } %>
                     </ul>
                 </li>
                 <li class="list-group-item">
                     <h6 class="d-flex justify-content-between align-items-center mt-4 mb-1 text-body-secondary text-uppercase">
                         Groupes
                         <div class="col-2">
-                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#groupModal">+</button>
                         </div>
                     </h6>
                     <ul class="list-group list-group-flush">
+                        <% for (Conversation conversation : userConversations) {
+                            String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
+                            if (conversation.isGroup()) {
+                        %>
+                        <form action="Home" method="post" id="<%= conversation.getId() %>">
+                            <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
+                            <button
+                                    type="submit"
+                                    class="btn list-group-item-action p-0 <%= buttonClass %>"
+                                    name="setCurrentConversationId">
+                                <%= conversation.getLabel() %>
+                            </button>
+                        </form>
+                        <% } } %>
                     </ul>
                 </li>
                 <li class="list-group-item">
@@ -101,17 +134,14 @@
                         Messages privés
                         <%-- Button trigger modal --%>
                         <div class="col-2">
-                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+                            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#discussionModal">+</button>
                         </div>
                     </h6>
                     <%-- Liste des conversations --%>
                     <ul class="list-group list-group-flush">
-                        <%
-                            List<Conversation> conversations = (List<Conversation>) request.getSession().getAttribute("userConversations");
-                            assert conversations != null;
-                            Conversation getCurrentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
-                            for (Conversation conversation : conversations) {
+                        <% for (Conversation conversation : userConversations) {
                                 String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
+                                if (conversation.isDiscussion()) {
                         %>
                             <form action="Home" method="post" id="<%= conversation.getId() %>">
                                 <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
@@ -122,7 +152,7 @@
                                     <%= conversation.getLabel() %>
                                 </button>
                             </form>
-                        <% } %>
+                        <% } } %>
                     </ul>
                 </li>
             </ul>
@@ -131,7 +161,10 @@
 
         </div>
         <%-- MODAL --%>
-        <jsp:include page="chatModal.jsp" />
+        <jsp:include page="modalsForm/channelModal.jsp" />
+        <jsp:include page="modalsForm/groupModal.jsp" />
+        <jsp:include page="modalsForm/discussionModal.jsp" />
+
         <div class="col stickyOverflow">
             <%-- Affichage messages --%>
             <%  Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
@@ -153,20 +186,17 @@
                 <% } %>
             </div>
             <div class="footer">
-<%--                <form action="Home" method="post">--%>
-                    <div class="input-group mb-3">
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="messageInput"
-                                name="messageInput"
-                                placeholder="Message"
-                                autocomplete="off"
-                                onkeypress="return runSendMessage(event)">
-<%--                        <button class="btn btn-outline-secondary" type="submit" name="sendMessage">Envoyer</button>--%>
-                        <button class="btn btn-outline-secondary" onclick="send();" name="sendMessage">Envoyer</button>
-                    </div>
-<%--                </form>--%>
+                <div class="input-group mb-3">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="messageInput"
+                            name="messageInput"
+                            placeholder="Message"
+                            autocomplete="off"
+                            onkeypress="return runSendMessage(event)">
+                    <button class="btn btn-outline-secondary" onclick="send();" name="sendMessage">Envoyer</button>
+                </div>
             </div>
             <script>
                 // Focus on the input

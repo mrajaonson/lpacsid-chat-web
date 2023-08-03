@@ -3,6 +3,7 @@ package fr.lpacsid.chat.dao;
 import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.enums.ConversationTypes;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -170,6 +171,9 @@ public class ConversationDaoImpl implements ConversationDao {
 
     @Override
     public Boolean checkIfConversationExists(Conversation conversation) throws SQLException {
+        if (!conversation.getType().equals(ConversationTypes.DISCUSSION)) {
+            return false;
+        }
         try {
             this.getConnection();
             String query = "SELECT 1 AS result FROM participations WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2 LIMIT 1;";

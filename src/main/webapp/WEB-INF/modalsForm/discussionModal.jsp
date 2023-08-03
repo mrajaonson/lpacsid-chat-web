@@ -7,7 +7,7 @@
 <%@ page import="fr.lpacsid.chat.beans.User" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="discussionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" name="addContact" class="btn btn-outline-primary">Ajouter</button>
+                    <button type="submit" name="createDiscussion" class="btn btn-outline-primary">Ajouter</button>
                 </div>
             </form>
         </div>
