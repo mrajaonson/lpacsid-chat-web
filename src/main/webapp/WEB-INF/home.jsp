@@ -179,7 +179,7 @@
                 <div class="alert alert-light p-1">
                     <p class="card-title">
                         <strong><%= currentMessage.getSender().getUsername() %></strong>
-                        <small> - <%= currentMessage.getDate() %></small>
+                        <small> - <%= currentMessage.getFormattedDate() %></small>
                     </p>
                     <p class="card-text"><%= currentMessage.getContent() %></p>
                 </div>

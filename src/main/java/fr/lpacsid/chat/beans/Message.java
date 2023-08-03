@@ -8,6 +8,7 @@ public class Message {
     private User sender;
     private String date;
     private String content;
+    private String formattedDate;
 
     public Message(Integer conversation, User sender, String content) {
         this.conversation = conversation;
@@ -21,6 +22,7 @@ public class Message {
         this.sender = sender;
         this.date = date;
         this.content = content;
+        this.formattedDate = DateUtility.getFormattedDate(date);
     }
 
     public Message() {
@@ -68,5 +70,13 @@ public class Message {
 
     public void initDate() {
         this.date = DateUtility.getLocalDateTimeNowToString();
+    }
+
+    public String getFormattedDate() {
+        return this.formattedDate;
+    }
+
+    public void setFormattedDate(String date) {
+        this.formattedDate = date;
     }
 }

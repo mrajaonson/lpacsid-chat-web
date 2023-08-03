@@ -37,7 +37,7 @@ function connect() {
 
             // Create a new small element and set its content to " - subtitle"
             const smallElement = document.createElement('small');
-            smallElement.textContent = ' - ' + message.date;
+            smallElement.textContent = ' - ' + formatDate(message.date);
 
             // Append the strong and small elements to the cardTitleElement
             cardTitleElement.appendChild(strongElement);
@@ -89,4 +89,20 @@ function runSendMessage(event) {
     if (event.keyCode === 13) {
         send()
     }
+}
+
+/**
+ * Retourne la date en paramètre sous le format dd/MM/yyyy HH:mm
+ * @param date
+ */
+function formatDate(date) {
+    const dateTime = new Date(date);
+
+    const day = String(dateTime.getDate()).padStart(2, '0');
+    const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+    const year = dateTime.getFullYear();
+    const hours = String(dateTime.getHours()).padStart(2, '0');
+    const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
 }

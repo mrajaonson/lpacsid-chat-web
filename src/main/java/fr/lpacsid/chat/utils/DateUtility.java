@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.utils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtility {
 
@@ -10,5 +11,16 @@ public class DateUtility {
      */
     public static String getLocalDateTimeNowToString() {
         return LocalDateTime.now().toString();
+    }
+
+    /**
+     * Retourne la date en paramètre sous le format dd/MM/yyyy HH:mm
+     * @param date String
+     * @return String
+     */
+    public static String getFormattedDate(String date) {
+        LocalDateTime dateTime = LocalDateTime.parse(date);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return dateTime.format(outputFormatter);
     }
 }
