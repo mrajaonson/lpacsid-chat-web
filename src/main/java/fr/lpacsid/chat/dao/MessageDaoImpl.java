@@ -63,7 +63,7 @@ public class MessageDaoImpl implements MessageDao {
     public Message readMessage(Integer id) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT * sender messages WHERE id = ?";
+            String query = "SELECT * FROM messages WHERE id = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, id);
