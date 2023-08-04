@@ -93,7 +93,7 @@
                             String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                             if (conversation.isChannel()) {
                         %>
-                        <form action="Home" method="post" id="<%= conversation.getId() %>">
+                        <form action="Conversation" method="post" id="<%= conversation.getId() %>">
                             <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
                             <button
                                     type="submit"
@@ -117,7 +117,7 @@
                             String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                             if (conversation.isGroup()) {
                         %>
-                        <form action="Home" method="post" id="<%= conversation.getId() %>">
+                        <form action="Conversation" method="post" id="<%= conversation.getId() %>">
                             <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
                             <button
                                     type="submit"
@@ -143,7 +143,7 @@
                                 String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                                 if (conversation.isDiscussion()) {
                         %>
-                            <form action="Home" method="post" id="<%= conversation.getId() %>">
+                            <form action="Conversation" method="post" id="<%= conversation.getId() %>">
                                 <input type="hidden" name="setCurrentConversationId" value="<%= conversation.getId() %>">
                                 <button
                                         type="submit"

@@ -1,8 +1,10 @@
 package fr.lpacsid.chat.servlets;
 
+import fr.lpacsid.chat.beans.Message;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
+import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
 import fr.lpacsid.chat.enums.ConversationTypes;
 import jakarta.servlet.RequestDispatcher;
@@ -22,6 +24,7 @@ import java.util.logging.Logger;
 public class Conversation extends HttpServlet {
     private UserDao userDao;
     private ConversationDao conversationDao;
+    private MessageDao messageDao;
 
     private HttpServletRequest request;
     private HttpSession session;
@@ -32,6 +35,7 @@ public class Conversation extends HttpServlet {
         DaoFactory daoFactory = DaoFactory.getInstance();
         this.userDao = daoFactory.getUserDao();
         this.conversationDao = daoFactory.getConversationDao();
+        this.messageDao = daoFactory.getMessageDao();
     }
 
     /**
@@ -79,9 +83,11 @@ public class Conversation extends HttpServlet {
             this.createGroupPost();
             this.createDiscussionPost();
 
+            this.setCurrentConversationInSession();
+
             requestDispatcher = context.getRequestDispatcher("/WEB-INF/home.jsp");
             requestDispatcher.forward(request, response);
-        } catch (ServletException | IOException e) {
+        } catch (SQLException | ServletException | IOException e) {
             logException(e);
         }
     }
@@ -154,6 +160,43 @@ public class Conversation extends HttpServlet {
             List<String> selectedParticipant = List.of(request.getParameter("selectedParticipant"));
             createConversation(selectedParticipant, ConversationTypes.DISCUSSION);
             setUserConversationsInSession();
+        }
+    }
+
+    private void setCurrentConversationInSession() throws SQLException {
+        String currentConversationForm = request.getParameter("setCurrentConversationId");
+        if (currentConversationForm != null) {
+            int currentConversationId = Integer.parseInt(currentConversationForm);
+            // Get all conversation messages
+            List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationId);
+
+            // Get conversation
+            fr.lpacsid.chat.beans.Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
+            currentConversationObj.setMessages(currentConversationMessages);
+            currentConversationObj.setDiscussionLabel(this.user.getId());
+
+            // Set current conversation to session
+            session.setAttribute("currentConversation", currentConversationObj);
+        }
+    }
+
+    private void sendMessage() throws SQLException {
+        String sendMessage = request.getParameter("sendMessage");
+        if (sendMessage != null) {
+            String messageInput = request.getParameter("messageInput");
+
+            // Get the current conversation
+            fr.lpacsid.chat.beans.Conversation currentConversationObj = (fr.lpacsid.chat.beans.Conversation) session.getAttribute("currentConversation");
+
+            if (!messageInput.isEmpty()) {
+                Message message = new Message(currentConversationObj.getId(), this.user, messageInput);
+                messageDao.createMessage(message);
+
+                // Refresh messages list
+                List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
+                currentConversationObj.setMessages(currentConversationMessages);
+                session.setAttribute("currentConversation", currentConversationObj);
+            }
         }
     }
 
