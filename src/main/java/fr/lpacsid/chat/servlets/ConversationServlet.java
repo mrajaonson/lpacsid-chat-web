@@ -2,6 +2,7 @@ package fr.lpacsid.chat.servlets;
 
 import fr.lpacsid.chat.beans.Message;
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Conversation extends HttpServlet {
+public class ConversationServlet extends HttpServlet {
     private UserDao userDao;
     private ConversationDao conversationDao;
     private MessageDao messageDao;
@@ -109,7 +110,7 @@ public class Conversation extends HttpServlet {
      */
     private void setUserConversationsInSession() {
         try {
-            List<fr.lpacsid.chat.beans.Conversation> conversations = conversationDao.readAllUserConversations(user.getId());
+            List<Conversation> conversations = conversationDao.readAllUserConversations(user.getId());
             session.setAttribute("userConversations", conversations);
         } catch (SQLException e) {
             logException(e);
@@ -124,7 +125,7 @@ public class Conversation extends HttpServlet {
     private void createConversation(List<String> participants, ConversationTypes type) {
         try {
             if (!participants.isEmpty()) {
-                fr.lpacsid.chat.beans.Conversation conversation = new fr.lpacsid.chat.beans.Conversation(user, type);
+                Conversation conversation = new Conversation(user, type);
                 for (String userId : participants) {
                     User userParticipant = userDao.readUserById(Integer.valueOf(userId));
                     conversation.addParticipant(userParticipant);
@@ -171,7 +172,7 @@ public class Conversation extends HttpServlet {
             List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationId);
 
             // Get conversation
-            fr.lpacsid.chat.beans.Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
+            Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
             currentConversationObj.setMessages(currentConversationMessages);
             currentConversationObj.setDiscussionLabel(this.user.getId());
 

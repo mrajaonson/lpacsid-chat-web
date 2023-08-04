@@ -23,8 +23,8 @@
     <servlet-class>fr.lpacsid.chat.servlets.Home</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>Conversation</servlet-name>
-    <servlet-class>fr.lpacsid.chat.servlets.Conversation</servlet-class>
+    <servlet-name>ConversationServlet</servlet-name>
+    <servlet-class>fr.lpacsid.chat.servlets.ConversationServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Auth</servlet-name>
@@ -43,7 +43,7 @@
     <url-pattern>/Home</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>Conversation</servlet-name>
+    <servlet-name>ConversationServlet</servlet-name>
     <url-pattern>/Conversation</url-pattern>
   </servlet-mapping>
 
