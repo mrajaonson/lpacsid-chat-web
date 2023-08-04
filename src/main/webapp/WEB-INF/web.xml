@@ -22,6 +22,10 @@
     <servlet-name>Home</servlet-name>
     <servlet-class>fr.lpacsid.chat.servlets.Home</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>Conversation</servlet-name>
+    <servlet-class>fr.lpacsid.chat.servlets.Conversation</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>Auth</servlet-name>
     <url-pattern>/Auth</url-pattern>
@@ -37,6 +41,10 @@
   <servlet-mapping>
     <servlet-name>Home</servlet-name>
     <url-pattern>/Home</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Conversation</servlet-name>
+    <url-pattern>/Conversation</url-pattern>
   </servlet-mapping>
 
   <jsp-config>

@@ -7,7 +7,6 @@ import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
-import fr.lpacsid.chat.enums.ConversationTypes;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -38,25 +37,7 @@ public class Home extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        ServletContext context = getServletContext();
-
-        User userSession = (User) session.getAttribute("userSession");
-        if (userSession != null) {
-            try {
-                // Get user's conversations
-                setUserConversationsInSession(userSession.getId(), session);
-
-                // Get users list
-                List<User> users = userDao.readAllUsers(userSession.getId());
-                session.setAttribute("users", users);
-            } catch (SQLException e) {
-                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
-            }
-            context.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
-        } else {
-            context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
-        }
+        response.sendRedirect("Conversation");
     }
 
     @Override
@@ -71,37 +52,6 @@ public class Home extends HttpServlet {
             // Redirect if not connected
             if (userSession == null) {
                 context.getRequestDispatcher("/WEB-INF/auth.jsp").forward(request, response);
-            }
-
-            // Create channel form
-            String createChannelForm = request.getParameter("createChannel");
-            if (createChannelForm != null) {
-                List<String> channelSelectedUsers = List.of(request.getParameterValues("channelSelectedUsers"));
-                createConversation(userSession, channelSelectedUsers, ConversationTypes.CHANNEL);
-                // Récupération des conversations du user
-                assert userSession != null;
-                setUserConversationsInSession(userSession.getId(), session);
-            }
-
-            // Create group form
-            String createGroupForm = request.getParameter("createGroup");
-            if (createGroupForm != null) {
-                List<String> groupSelectedUsers = List.of(request.getParameterValues("groupSelectedUsers"));
-                createConversation(userSession, groupSelectedUsers, ConversationTypes.GROUP);
-                // Récupération des conversations du user
-                assert userSession != null;
-                setUserConversationsInSession(userSession.getId(), session);
-            }
-
-
-            // Create discussion form
-            String createDiscussionForm = request.getParameter("createDiscussion");
-            if (createDiscussionForm != null) {
-                List<String> selectedParticipant = List.of(request.getParameter("selectedParticipant"));
-                createConversation(userSession, selectedParticipant, ConversationTypes.DISCUSSION);
-                // Récupération des conversations du user
-                assert userSession != null;
-                setUserConversationsInSession(userSession.getId(), session);
             }
 
             // Display conversation form
@@ -164,40 +114,5 @@ public class Home extends HttpServlet {
      */
     public void logException(Exception e) {
         Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
-    }
-
-    /**
-     * Permet de créer une conversation
-     * @param user User
-     * @param participants Liste des participants
-     * @param type Type de conversation
-     */
-    public void createConversation(User user, List<String> participants, ConversationTypes type) throws SQLException {
-        try {
-            if (!participants.isEmpty()) {
-                Conversation conversation = new Conversation(user, type);
-                for (String userId : participants) {
-                    User userParticipant = userDao.readUserById(Integer.valueOf(userId));
-                    conversation.addParticipant(userParticipant);
-                }
-                conversationDao.createConversation(conversation);
-            }
-        } catch (SQLException e) {
-            logException(e);
-        }
-    }
-
-    /**
-     * Met en session la liste des conversations de l'utilisateur
-     * @param user Integer
-     * @param session Sesion
-     */
-    public void setUserConversationsInSession(Integer user, HttpSession session) {
-        try {
-            List<Conversation> conversations = this.conversationDao.readAllUserConversations(user);
-            session.setAttribute("userConversations", conversations);
-        } catch (SQLException e) {
-            logException(e);
-        }
     }
 }

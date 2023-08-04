@@ -11,7 +11,7 @@
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="Home" method="POST">
+            <form action="Conversation" method="POST">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Créer une discussion</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"

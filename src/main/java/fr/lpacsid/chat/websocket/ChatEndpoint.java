@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.beans.Message;
@@ -29,13 +31,11 @@ public class ChatEndpoint {
     private static final HashMap<String, User> users = new HashMap<>();
 
     private final UserDao userDao;
-    private final ConversationDao conversationDao;
     private final MessageDao messageDao;
 
     public ChatEndpoint() {
         DaoFactory daoFactory = DaoFactory.getInstance();
         this.userDao = daoFactory.getUserDao();
-        this.conversationDao = daoFactory.getConversationDao();
         this.messageDao = daoFactory.getMessageDao();
     }
 
@@ -46,13 +46,6 @@ public class ChatEndpoint {
 
         User user = this.userDao.readUser(username);
         users.put(session.getId(), user);
-
-//        Message message = new Message();
-//        message.initDate();
-//        message.setSender(user);
-//        message.setContent("Connected " + username);
-//
-//        broadcast(message);
     }
 
     @OnMessage
@@ -69,11 +62,6 @@ public class ChatEndpoint {
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
         chatEndpoints.remove(this);
-//        Message message = new Message();
-//        message.initDate();
-//        message.setSender(users.get(session.getId()));
-//        message.setContent("Disconnected!");
-//        broadcast(message);
     }
 
     @OnError
@@ -87,7 +75,7 @@ public class ChatEndpoint {
                 try {
                     endpoint.session.getBasicRemote().sendObject(message);
                 } catch (IOException | EncodeException e) {
-                    e.printStackTrace();
+                    Logger.getLogger(ChatEndpoint.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         });

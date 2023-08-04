@@ -176,7 +176,7 @@ public class ConversationDaoImpl implements ConversationDao {
         }
         try {
             this.getConnection();
-            String query = "SELECT 1 AS result FROM participations WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2 LIMIT 1;";
+            String query = "SELECT 1 AS result FROM conversations WHERE id IN (SELECT conversation FROM participations WHERE user IN (?, ?) GROUP BY conversation HAVING COUNT(DISTINCT user) >= 2) AND type = 'DISCUSSION' LIMIT 1;";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setInt(1, conversation.getParticipations().get(0).getUser().getId());
