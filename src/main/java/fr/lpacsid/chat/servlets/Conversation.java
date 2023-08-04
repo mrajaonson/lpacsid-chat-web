@@ -179,25 +179,4 @@ public class Conversation extends HttpServlet {
             session.setAttribute("currentConversation", currentConversationObj);
         }
     }
-
-    private void sendMessage() throws SQLException {
-        String sendMessage = request.getParameter("sendMessage");
-        if (sendMessage != null) {
-            String messageInput = request.getParameter("messageInput");
-
-            // Get the current conversation
-            fr.lpacsid.chat.beans.Conversation currentConversationObj = (fr.lpacsid.chat.beans.Conversation) session.getAttribute("currentConversation");
-
-            if (!messageInput.isEmpty()) {
-                Message message = new Message(currentConversationObj.getId(), this.user, messageInput);
-                messageDao.createMessage(message);
-
-                // Refresh messages list
-                List<Message> currentConversationMessages = messageDao.readAllConversationMessages(currentConversationObj.getId());
-                currentConversationObj.setMessages(currentConversationMessages);
-                session.setAttribute("currentConversation", currentConversationObj);
-            }
-        }
-    }
-
 }
