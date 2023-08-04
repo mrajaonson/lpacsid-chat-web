@@ -13,7 +13,7 @@ public interface UserDao {
 
     User readUserById(Integer id) throws SQLException;
 
-    void updateUser(User user);
+    void updateUser(User user) throws SQLException;
 
     void deleteUser(String username);
 

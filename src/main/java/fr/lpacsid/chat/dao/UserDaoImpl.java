@@ -86,7 +86,23 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user) throws SQLException {
+        try {
+            getConnection();
+            String query = "UPDATE users SET username = ?, status = ?, lastConnection = ? WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
+
+            this.preparedStatement.setString(1, user.getUsername());
+            this.preparedStatement.setString(2, user.getStatusString());
+            this.preparedStatement.setString(3, user.getLastConnection());
+            this.preparedStatement.setInt(4, user.getId());
+
+            this.preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            this.logErrorException(e);
+        } finally {
+            this.closeConnection();
+        }
 
     }
 

@@ -56,7 +56,13 @@ public class Login extends HttpServlet {
                 boolean canConnect = userDao.validateUser(username, password);
 
                 if (canConnect) {
+                    // Récupération du user
                     User user = userDao.readUser(username);
+                    // Actualisation de la date de dernière connexion
+                    user.initLastConnection();
+                    // Mise à jour du user
+                    userDao.updateUser(user);
+                    // Mise en session du user
                     session.setAttribute("userSession", user);
                     response.sendRedirect("Home");
                 } else {
