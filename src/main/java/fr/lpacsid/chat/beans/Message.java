@@ -21,7 +21,7 @@ public class Message {
         this.conversation = conversation;
         this.sender = sender;
         this.date = date;
-        this.content = content;
+        this.content = content.trim();
         this.formattedDate = DateUtility.getFormattedDate(date);
     }
 

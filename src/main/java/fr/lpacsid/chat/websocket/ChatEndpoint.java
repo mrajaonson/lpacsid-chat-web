@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.beans.Message;
-import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
@@ -50,13 +49,15 @@ public class ChatEndpoint {
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
-        message.setSender(users.get(session.getId()));
-        message.initDate();
+        if (!message.getContent().trim().isEmpty()) {
+            message.setSender(users.get(session.getId()));
+            message.initDate();
 
-        // Persist
-        this.messageDao.createMessage(message);
+            // Persist
+            this.messageDao.createMessage(message);
 
-        broadcast(message);
+            broadcast(message);
+        }
     }
 
     @OnClose
