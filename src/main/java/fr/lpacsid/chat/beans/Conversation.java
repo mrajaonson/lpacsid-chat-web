@@ -110,7 +110,6 @@ public class Conversation {
         this.prime = prime;
         this.initCreationDate();
         this.addModerator(prime);
-        this.label = "";
         this.type = type;
     }
 
@@ -134,11 +133,10 @@ public class Conversation {
             if (participation != null) {
                 this.label = participation.getUser().getUsername();
             }
-        } else if (this.isChannel()) {
+        } else if (this.isChannel() && this.label.isEmpty()) {
             this.label = ConversationTypes.CHANNEL.getFr() + " #" +this.id;
-        } else {
+        } else if (this.isChannel() && this.label.isEmpty()) {
             this.label = ConversationTypes.GROUP.getFr() + " #" +this.id;
-
         }
     }
 }

@@ -4,6 +4,7 @@ import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.enums.ConversationTypes;
+import fr.lpacsid.chat.utils.LoggerUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ConversationDaoImpl implements ConversationDao {
 
@@ -21,11 +21,13 @@ public class ConversationDaoImpl implements ConversationDao {
     private PreparedStatement preparedStatement;
     private final ParticipationDao participationDao;
     private final UserDao userDao;
+    private final MessageDao messageDao;
 
     public ConversationDaoImpl(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
         this.participationDao = this.daoFactory.getParticipationDao();
         this.userDao = this.daoFactory.getUserDao();
+        this.messageDao = this.daoFactory.getMessageDao();
     }
 
     private void getConnection() throws SQLException {
@@ -39,10 +41,6 @@ public class ConversationDaoImpl implements ConversationDao {
         if (this.connection != null) {
             this.connection.close();
         }
-    }
-
-    private void logErrorException(Exception e) {
-        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
     }
 
     @Override
@@ -60,7 +58,8 @@ public class ConversationDaoImpl implements ConversationDao {
                 this.preparedStatement.setString(3, conversation.getLabel());
                 this.preparedStatement.setString(4, conversation.getTypeString());
 
-                this.preparedStatement.executeUpdate();
+                int rowAffected = this.preparedStatement.executeUpdate();
+                LoggerUtility.logInsertQuery("CONVERSATIONS", rowAffected);
 
                 // Create participations
                 Integer conversationId = this.getConversationId(conversation);
@@ -70,7 +69,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -99,7 +98,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 return new Conversation(id, prime, creationDate, participations, label, type);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -107,13 +106,42 @@ public class ConversationDaoImpl implements ConversationDao {
     }
 
     @Override
-    public void updateConversation(Integer id) throws SQLException {
+    public void updateConversation(Conversation conversation) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "UPDATE conversations SET label = ? WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
+            this.preparedStatement.setString(1, conversation.getLabel());
+            this.preparedStatement.setInt(2, conversation.getId());
+
+            int rowAffected = this.preparedStatement.executeUpdate();
+            LoggerUtility.logUpdateQuery(  "conversations", rowAffected, conversation.getId());
+        } catch (SQLException e) {
+            LoggerUtility.logException(e);
+        } finally {
+            this.closeConnection();
+        }
     }
 
     @Override
     public void deleteConversation(Integer id) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "DELETE FROM conversations WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
+            this.preparedStatement.setInt(1, id);
+
+            int rowAffected = this.preparedStatement.executeUpdate();
+            LoggerUtility.logDeleteQuery("conversations", rowAffected, id);
+
+            this.messageDao.deleteMessagesByConversationId(id);
+        } catch (SQLException e) {
+            LoggerUtility.logException(e);
+        } finally {
+            this.closeConnection();
+        }
     }
 
     @Override
@@ -121,9 +149,9 @@ public class ConversationDaoImpl implements ConversationDao {
         try {
             this.getConnection();
             List<Conversation> conversations = new ArrayList<>();
-            List<Integer> converationsId = this.readAllUserConversationsId(userId);
+            List<Integer> conversationsIdSender = this.readAllUserConversationsId(userId);
 
-            for (Integer conversationId : converationsId) {
+            for (Integer conversationId : conversationsIdSender) {
                 Conversation conversation = this.readConversation(conversationId);
                 if (conversation != null) {
                     conversation.setDiscussionLabel(userId);
@@ -132,7 +160,7 @@ public class ConversationDaoImpl implements ConversationDao {
             }
             return conversations;
         } catch (SQLException e) {
-            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -162,7 +190,7 @@ public class ConversationDaoImpl implements ConversationDao {
 
             return userConversationsId;
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -187,7 +215,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 return true;
             }
         } catch (SQLException e) {
-            Logger.getLogger(ConversationDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -210,7 +238,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 return resultSet.getInt("id");
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }

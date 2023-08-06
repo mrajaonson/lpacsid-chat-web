@@ -1,6 +1,7 @@
 package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.utils.LoggerUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UserDaoImpl implements UserDao {
 
@@ -34,10 +34,6 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    private void logErrorException(Exception e) {
-        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
-    }
-
     @Override
     public void createUser(User user) throws SQLException {
         try {
@@ -51,9 +47,15 @@ public class UserDaoImpl implements UserDao {
             this.preparedStatement.setString(4, user.getStatusString());
             this.preparedStatement.setString(5, user.getLastConnection());
 
-            this.preparedStatement.executeUpdate();
+            int rowAffected = this.preparedStatement.executeUpdate();
+
+            if (rowAffected > 0) {
+                System.out.println("Users : insert " + rowAffected + " rows.");
+            } else {
+                System.out.println("Users : No rows inserted.");
+            }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             closeConnection();
         }
@@ -78,7 +80,7 @@ public class UserDaoImpl implements UserDao {
                 return new User(id, username, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -97,9 +99,15 @@ public class UserDaoImpl implements UserDao {
             this.preparedStatement.setString(3, user.getLastConnection());
             this.preparedStatement.setInt(4, user.getId());
 
-            this.preparedStatement.executeUpdate();
+            int rowAffected = this.preparedStatement.executeUpdate();
+
+            if (rowAffected > 0) {
+                System.out.println("Row with ID " + user.getId() + " updated successfully.");
+            } else {
+                System.out.println("No rows updated. Row with ID " + user.getId() + " not found.");
+            }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -126,7 +134,7 @@ public class UserDaoImpl implements UserDao {
                 return true;
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -151,7 +159,7 @@ public class UserDaoImpl implements UserDao {
                 return new User(id, username, creationDate, status, lastConnection);
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -183,7 +191,7 @@ public class UserDaoImpl implements UserDao {
 
             return users;
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }

@@ -10,7 +10,7 @@ public interface ConversationDao {
 
     Conversation readConversation(Integer id) throws SQLException;
 
-    void updateConversation(Integer id) throws SQLException;
+    void updateConversation(Conversation conversation) throws SQLException;
 
     void deleteConversation(Integer id) throws SQLException;
 

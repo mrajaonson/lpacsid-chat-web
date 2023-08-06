@@ -8,6 +8,7 @@ import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
 import fr.lpacsid.chat.enums.ConversationTypes;
+import fr.lpacsid.chat.utils.LoggerUtility;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -39,14 +40,6 @@ public class ConversationServlet extends HttpServlet {
         this.messageDao = daoFactory.getMessageDao();
     }
 
-    /**
-     * Affiche un log de l'exception
-     * @param e Exception
-     */
-    public void logException(Exception e) {
-        Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, e);
-    }
-
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -66,7 +59,7 @@ public class ConversationServlet extends HttpServlet {
 
             context.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
         } catch (SQLException | ServletException | IOException e) {
-            logException(e);
+            LoggerUtility.logException(e);
         }
     }
 
@@ -83,18 +76,20 @@ public class ConversationServlet extends HttpServlet {
             this.createChannelPost();
             this.createGroupPost();
             this.createDiscussionPost();
+            this.updateDiscussionLabel();
+            this.deleteCurrentDiscussion();
 
             this.setCurrentConversationInSession();
 
             requestDispatcher = context.getRequestDispatcher("/WEB-INF/home.jsp");
             requestDispatcher.forward(request, response);
         } catch (SQLException | ServletException | IOException e) {
-            logException(e);
+            LoggerUtility.logException(e);
         }
     }
 
     /**
-     * Redirection si la session utiliateur est expirée
+     * Redirection si la session utilisateur est expirée
      */
     private void redirectNullSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext context = getServletContext();
@@ -113,7 +108,7 @@ public class ConversationServlet extends HttpServlet {
             List<Conversation> conversations = conversationDao.readAllUserConversations(user.getId());
             session.setAttribute("userConversations", conversations);
         } catch (SQLException e) {
-            logException(e);
+            LoggerUtility.logException(e);
         }
     }
 
@@ -130,10 +125,11 @@ public class ConversationServlet extends HttpServlet {
                     User userParticipant = userDao.readUserById(Integer.valueOf(userId));
                     conversation.addParticipant(userParticipant);
                 }
+                conversation.setLabel("");
                 conversationDao.createConversation(conversation);
             }
         } catch (SQLException e) {
-            logException(e);
+            LoggerUtility.logException(e);
         }
     }
 
@@ -178,6 +174,42 @@ public class ConversationServlet extends HttpServlet {
 
             // Set current conversation to session
             session.setAttribute("currentConversation", currentConversationObj);
+
+            // Set user conversations in session
+            setUserConversationsInSession();
         }
+    }
+
+    private void updateDiscussionLabel() throws SQLException {
+        String changeDiscussionLabel = request.getParameter("changeDiscussionLabel");
+        if (changeDiscussionLabel != null) {
+            Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
+            currentConversation.setLabel(changeDiscussionLabel.trim());
+
+            // Persist
+            conversationDao.updateConversation(currentConversation);
+
+            // Set user conversations in session
+            setUserConversationsInSession();
+        }
+    }
+
+    private void deleteCurrentDiscussion() throws SQLException {
+        String deleteCurrentDiscussion = request.getParameter("deleteCurrentDiscussion");
+        if (deleteCurrentDiscussion != null) {
+            Conversation currentConversation = (Conversation) request.getSession().getAttribute("currentConversation");
+
+            // Delete
+            conversationDao.deleteConversation(currentConversation.getId());
+
+            // Set user conversations in session
+            setUserConversationsInSession();
+
+            clearConversationSession();
+        }
+    }
+
+    private void clearConversationSession() {
+        this.session.setAttribute("currentConversation", null);
     }
 }

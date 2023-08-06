@@ -2,6 +2,7 @@ package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.utils.LoggerUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ParticipationDaoImpl implements ParticipationDao {
 
@@ -37,10 +37,6 @@ public class ParticipationDaoImpl implements ParticipationDao {
         }
     }
 
-    private void logErrorException(Exception e) {
-        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
-    }
-
     @Override
     public void createParticipation(Participation participation) throws SQLException {
         try {
@@ -54,9 +50,15 @@ public class ParticipationDaoImpl implements ParticipationDao {
             this.preparedStatement.setString(3, participation.getAddDate());
             this.preparedStatement.setString(4, participation.getStringRole());
 
-            this.preparedStatement.executeUpdate();
+            int rowAffected = this.preparedStatement.executeUpdate();
+
+            if (rowAffected > 0) {
+                System.out.println("Participations : insert " + rowAffected + " rows.");
+            } else {
+                System.out.println("Participations : No rows inserted.");
+            }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -85,7 +87,7 @@ public class ParticipationDaoImpl implements ParticipationDao {
                 return new Participation(id, conversationId, user, addDate, role);
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -127,7 +129,7 @@ public class ParticipationDaoImpl implements ParticipationDao {
             }
             return participations;
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }

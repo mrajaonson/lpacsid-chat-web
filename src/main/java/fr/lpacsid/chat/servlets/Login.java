@@ -3,6 +3,7 @@ package fr.lpacsid.chat.servlets;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.UserDao;
+import fr.lpacsid.chat.utils.LoggerUtility;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -72,7 +73,7 @@ public class Login extends HttpServlet {
                 dispatcher = contexte.getRequestDispatcher("/WEB-INF/login.jsp");
             }
         } catch (SQLException e) {
-            Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         }
 
         if (dispatcher != null) {

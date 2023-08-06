@@ -2,6 +2,7 @@ package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.Message;
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.utils.LoggerUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MessageDaoImpl implements MessageDao {
 
@@ -35,10 +35,6 @@ public class MessageDaoImpl implements MessageDao {
         }
     }
 
-    private void logErrorException(Exception e) {
-        Logger.getLogger(MessageDaoImpl.class.getName()).log(Level.SEVERE, null, e);
-    }
-
     @Override
     public void createMessage(Message message) throws SQLException {
         try {
@@ -51,9 +47,11 @@ public class MessageDaoImpl implements MessageDao {
             this.preparedStatement.setString(3, message.getDate());
             this.preparedStatement.setString(4, message.getContent());
 
-            this.preparedStatement.executeUpdate();
+            int rowAffected = this.preparedStatement.executeUpdate();
+            LoggerUtility.logInsertQuery("messages", rowAffected);
+
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         }  finally {
             this.closeConnection();
         }
@@ -82,7 +80,7 @@ public class MessageDaoImpl implements MessageDao {
                 return new Message(conversation, user, date, content);
             }
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
@@ -96,7 +94,38 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     public void deleteMessage(Integer id) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "DELETE FROM messages WHERE id = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
 
+            this.preparedStatement.setInt(1, id);
+
+            int rowAffected = this.preparedStatement.executeUpdate();
+            LoggerUtility.logDeleteQuery("messages", rowAffected, id);
+        } catch (SQLException e) {
+            LoggerUtility.logException(e);
+        } finally {
+            this.closeConnection();
+        }
+    }
+
+    @Override
+    public void deleteMessagesByConversationId(Integer id) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "DELETE FROM messages WHERE conversation = ?";
+            this.preparedStatement = this.connection.prepareStatement(query);
+
+            this.preparedStatement.setInt(1, id);
+
+            int rowAffected = this.preparedStatement.executeUpdate();
+            LoggerUtility.logDeleteQuery("messages", rowAffected, id);
+        } catch (SQLException e) {
+            LoggerUtility.logException(e);
+        } finally {
+            this.closeConnection();
+        }
     }
 
     @Override
@@ -127,7 +156,7 @@ public class MessageDaoImpl implements MessageDao {
 
             return messages;
         } catch (SQLException e) {
-            this.logErrorException(e);
+            LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }

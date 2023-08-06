@@ -14,5 +14,7 @@ public interface MessageDao {
 
     void deleteMessage(Integer id) throws SQLException;
 
+    void deleteMessagesByConversationId(Integer id) throws SQLException;
+
     List<Message> readAllConversationMessages(Integer conversation) throws SQLException;
 }
