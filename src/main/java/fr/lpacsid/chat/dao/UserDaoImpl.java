@@ -101,12 +101,7 @@ public class UserDaoImpl implements UserDao {
             this.preparedStatement.setInt(4, user.getId());
 
             int rowAffected = this.preparedStatement.executeUpdate();
-
-            if (rowAffected > 0) {
-                System.out.println("Row with ID " + user.getId() + " updated successfully.");
-            } else {
-                System.out.println("No rows updated. Row with ID " + user.getId() + " not found.");
-            }
+            LoggerUtility.logUpdateQuery("USERS", rowAffected, user.getId());
         } catch (SQLException e) {
             LoggerUtility.logException(e);
         } finally {
@@ -117,6 +112,28 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void deleteUser(String username) {
 
+    }
+
+    @Override
+    public boolean checkUsername(String username) throws SQLException {
+        try {
+            this.getConnection();
+            String query = "SELECT username FROM `users` WHERE username = ? UNION ALL SELECT username FROM `usernames` WHERE username = ? LIMIT 1;";
+            this.preparedStatement = this.connection.prepareStatement(query);
+
+            this.preparedStatement.setString(1, username);
+            this.preparedStatement.setString(2, username);
+
+            ResultSet resultSet = this.preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return false;
+            }
+        } catch (SQLException e) {
+            LoggerUtility.logException(e);
+        } finally {
+            this.closeConnection();
+        }
+        return true;
     }
 
     @Override

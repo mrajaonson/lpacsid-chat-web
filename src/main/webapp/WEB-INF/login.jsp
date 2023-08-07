@@ -23,6 +23,7 @@
             <input type="password" class="form-control" id="password" name="password" required>
             <label for="password">Mot de passe</label>
         </div>
+        <p class="text-danger"><%= request.getAttribute("errorLogin") != null ? request.getAttribute("errorLogin") : ""%></p>
         <button class="btn btn-outline-primary" type="submit" name="login">
             Se connecter
         </button>

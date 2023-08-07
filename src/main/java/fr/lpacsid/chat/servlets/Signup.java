@@ -46,9 +46,9 @@ public class Signup extends HttpServlet {
 
             try {
                 // Vérification si username existant
-                User userCheck = userDao.readUser(username);
-                if (userCheck != null) {
-                    request.setAttribute("errorLogin", "Login existant");
+                boolean userCheck = userDao.checkUsername(username);
+                if (!userCheck) {
+                    request.setAttribute("errorLogin", "Login non disponible");
                     dispatcher = context.getRequestDispatcher("/WEB-INF/signup.jsp");
                 } else {
                     // Vérification si saisie formulaire correcte

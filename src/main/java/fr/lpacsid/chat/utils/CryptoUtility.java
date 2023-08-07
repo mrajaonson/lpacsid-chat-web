@@ -1,13 +1,14 @@
 package fr.lpacsid.chat.utils;
-import org.mindrot.jbcrypt.BCrypt;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class CryptoUtility {
     public static String hashPassword(String password) {
-        String salt = BCrypt.gensalt();
-        return BCrypt.hashpw(password, salt);
+        return BCrypt.withDefaults().hashToString(12, password.toCharArray());
     }
 
     public static Boolean checkPassword(String password, String hashedPassword) {
-        return BCrypt.checkpw(password, hashedPassword);
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), hashedPassword);
+        return result.verified;
     }
 }

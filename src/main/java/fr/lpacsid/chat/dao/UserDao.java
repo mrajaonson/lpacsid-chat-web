@@ -17,6 +17,8 @@ public interface UserDao {
 
     void deleteUser(String username);
 
+    boolean checkUsername(String username) throws SQLException;
+
     boolean validateUser(String username, String password) throws SQLException;
 
     List<User> readAllUsers(Integer userId) throws SQLException;

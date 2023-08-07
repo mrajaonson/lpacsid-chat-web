@@ -53,7 +53,6 @@ public class Login extends HttpServlet {
                 String password = request.getParameter("password");
 
                 boolean canConnect = userDao.validateUser(username, password);
-
                 if (canConnect) {
                     // Récupération du user
                     User user = userDao.readUser(username);
@@ -65,6 +64,7 @@ public class Login extends HttpServlet {
                     session.setAttribute("userSession", user);
                     response.sendRedirect("Home");
                 } else {
+                    request.setAttribute("errorLogin", "Login et/ou mot de passe incorrecte");
                     dispatcher = contexte.getRequestDispatcher("/WEB-INF/login.jsp");
                 }
             } else {
