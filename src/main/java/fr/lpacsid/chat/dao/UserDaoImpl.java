@@ -1,12 +1,12 @@
 package fr.lpacsid.chat.dao;
 
 import fr.lpacsid.chat.beans.User;
+import fr.lpacsid.chat.utils.CryptoUtility;
 import fr.lpacsid.chat.utils.LoggerUtility;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class UserDaoImpl implements UserDao {
 
@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
             this.preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             this.preparedStatement.setString(1, user.getUsername());
-            this.preparedStatement.setString(2, user.getPassword());
+            this.preparedStatement.setString(2, CryptoUtility.hashPassword(user.getPassword()));
             this.preparedStatement.setString(3, user.getCreationDate());
             this.preparedStatement.setString(4, user.getStatusString());
             this.preparedStatement.setString(5, user.getLastConnection());
@@ -112,7 +112,6 @@ public class UserDaoImpl implements UserDao {
         } finally {
             this.closeConnection();
         }
-
     }
 
     @Override
@@ -124,15 +123,15 @@ public class UserDaoImpl implements UserDao {
     public boolean validateUser(String username, String password) throws SQLException {
         try {
             getConnection();
-            String query = "SELECT 1 FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT password FROM users WHERE username = ?";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);
-            this.preparedStatement.setString(2, password);
 
             ResultSet resultSet = this.preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return true;
+                String hashedPassword = resultSet.getString("password");
+                return CryptoUtility.checkPassword(password, hashedPassword);
             }
         } catch (SQLException e) {
             LoggerUtility.logException(e);
