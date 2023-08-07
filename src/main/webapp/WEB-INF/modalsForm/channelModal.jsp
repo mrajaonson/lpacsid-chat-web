@@ -7,21 +7,23 @@
 <%@ page import="fr.lpacsid.chat.beans.User" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div
-        class="modal fade"
-        id="channelModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
+<div class="modal fade"
+     id="channelModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="channelModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form action="Conversation" method="POST">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Créer un canal d'information</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="channelModalLabel">Créer un canal d'information</h1>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close">
+          </button>
         </div>
         <div class="modal-body">
             <%
@@ -30,7 +32,11 @@
                 for (User user: users) {
             %>
             <div class="form-check">
-              <input class="form-check-input" name="channelSelectedUsers" type="checkbox" value="<%= user.getId() %>" id="<%= user.getUsername() %>">
+              <input class="form-check-input"
+                     name="channelSelectedUsers"
+                     type="checkbox"
+                     value="<%= user.getId() %>"
+                     id="<%= user.getUsername() %>">
               <label class="form-check-label" for="<%= user.getUsername() %>">
                 <%= user.getUsername() %>
               </label>

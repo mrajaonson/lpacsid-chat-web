@@ -6,18 +6,17 @@
 <%@ page import="fr.lpacsid.chat.beans.Conversation" %>
 <%@ page import="fr.lpacsid.chat.beans.Participation" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div
-        class="modal fade"
-        id="discussionMembersModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
+<div class="modal fade"
+     id="discussionMembersModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="discussionMembersModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Liste des membres de la discussion</h1>
+          <h1 class="modal-title fs-5" id="discussionMembersModalLabel">Liste des membres de la discussion</h1>
           <button
                   type="button"
                   class="btn-close"

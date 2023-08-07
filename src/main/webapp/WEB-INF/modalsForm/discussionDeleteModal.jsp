@@ -4,19 +4,18 @@
   Time: 15:22
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div
-        class="modal fade"
-        id="discussionDeleteModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
+<div class="modal fade"
+     id="discussionDeleteModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="discussionDeleteModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form action="Conversation" method="POST">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Supprimer la discussion</h1>
+                    <h1 class="modal-title fs-5" id="discussionDeleteModalLabel">Supprimer la discussion</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
