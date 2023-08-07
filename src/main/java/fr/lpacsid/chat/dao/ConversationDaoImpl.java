@@ -6,13 +6,9 @@ import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.enums.ConversationTypes;
 import fr.lpacsid.chat.utils.LoggerUtility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class ConversationDaoImpl implements ConversationDao {
 
@@ -44,35 +40,44 @@ public class ConversationDaoImpl implements ConversationDao {
     }
 
     @Override
-    public void createConversation(Conversation conversation) throws SQLException {
+    public Integer createConversation(Conversation conversation) throws SQLException {
+        Integer insertedId = null;
         try {
             Boolean exists = this.checkIfConversationExists(conversation);
             this.getConnection();
 
             if (!exists) {
                 String query = "INSERT INTO conversations(prime, creationDate, label, type) VALUES(?, ?, ?, ?)";
-                this.preparedStatement = this.connection.prepareStatement(query);
+                this.preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
                 this.preparedStatement.setInt(1, conversation.getPrime().getId());
                 this.preparedStatement.setString(2, conversation.getCreationDate());
                 this.preparedStatement.setString(3, conversation.getLabel());
                 this.preparedStatement.setString(4, conversation.getTypeString());
 
-                int rowAffected = this.preparedStatement.executeUpdate();
-                LoggerUtility.logInsertQuery("CONVERSATIONS", rowAffected);
+                this.preparedStatement.executeUpdate();
 
-                // Create participations
-                Integer conversationId = this.getConversationId(conversation);
-                for (Participation participation : conversation.getParticipations()) {
-                    participation.setConversation(conversationId);
-                    this.participationDao.createParticipation(participation);
+                ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    insertedId = generatedKeys.getInt(1);
+                    LoggerUtility.logInsertQuery("CONVERSATIONS", insertedId);
+
+                    // Create participations
+                    Integer conversationId = this.getConversationId(conversation);
+                    for (Participation participation : conversation.getParticipations()) {
+                        participation.setConversation(conversationId);
+                        this.participationDao.createParticipation(participation);
+                    }
                 }
+
+                return insertedId;
             }
         } catch (SQLException e) {
             LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
+        return insertedId;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface MessageDao {
-    void createMessage(Message message) throws SQLException;
+    Integer createMessage(Message message) throws SQLException;
 
     Message readMessage(Integer id) throws SQLException;
 

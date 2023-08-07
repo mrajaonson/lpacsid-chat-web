@@ -4,10 +4,7 @@ import fr.lpacsid.chat.beans.Participation;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.utils.LoggerUtility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,30 +35,33 @@ public class ParticipationDaoImpl implements ParticipationDao {
     }
 
     @Override
-    public void createParticipation(Participation participation) throws SQLException {
+    public Integer createParticipation(Participation participation) throws SQLException {
+        Integer insertedId = null;
         try {
             this.getConnection();
 
             String query = "INSERT INTO participations(conversation, user, addDate, role) VALUES (?, ?, ?, ?)";
-            this.preparedStatement = this.connection.prepareStatement(query);
+            this.preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             this.preparedStatement.setInt(1, participation.getConversation());
             this.preparedStatement.setInt(2, participation.getUser().getId());
             this.preparedStatement.setString(3, participation.getAddDate());
             this.preparedStatement.setString(4, participation.getStringRole());
 
-            int rowAffected = this.preparedStatement.executeUpdate();
-
-            if (rowAffected > 0) {
-                System.out.println("Participations : insert " + rowAffected + " rows.");
-            } else {
-                System.out.println("Participations : No rows inserted.");
+            this.preparedStatement.executeUpdate();
+            ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                insertedId = generatedKeys.getInt(1);
+                LoggerUtility.logInsertQuery("PARTICIPATIONS", insertedId);
             }
+
+            return insertedId;
         } catch (SQLException e) {
             LoggerUtility.logException(e);
         } finally {
             this.closeConnection();
         }
+        return insertedId;
     }
 
     @Override

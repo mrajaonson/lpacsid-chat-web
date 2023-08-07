@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ConversationDao {
-    void createConversation(Conversation conversation) throws SQLException;
+    Integer createConversation(Conversation conversation) throws SQLException;
 
     Conversation readConversation(Integer id) throws SQLException;
 

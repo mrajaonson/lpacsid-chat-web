@@ -80,7 +80,7 @@
                 placeholder="Message"
                 autocomplete="off"
                 onkeypress="return runSendMessage(event)">
-        <button class="btn btn-outline-secondary" onclick="send();" name="sendMessage">Envoyer</button>
+        <button class="btn btn-outline-secondary" onclick="sendMessage();" name="sendMessage">Envoyer</button>
     </div>
 </div>
 <script>

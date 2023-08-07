@@ -17,51 +17,55 @@ function connect() {
     ws = new WebSocket("ws://" +host  + pathname + "/chat/" + username);
 
     ws.onmessage = function(event) {
-        const messagesContainer = document.getElementById("messagesContainer");
-        const message = JSON.parse(event.data);
-        const conversation = document.getElementById("currentConversationId").textContent;
+        const websocketMessage = JSON.parse(event.data);
+        const currentConversationId = document.getElementById("currentConversationId");
 
-        // send and read message only if in the same conversation
-        if (parseInt(conversation) === message.conversation) {
-            // Create a new div element with class "alert alert-light p-1"
-            const newDiv = document.createElement('div');
-            newDiv.className = 'alert alert-light p-1';
+        // Message
+        if (websocketMessage.type === "MESSAGE") {
+            const messagesContainer = document.getElementById("messagesContainer");
 
-            // Create a new p element with class "card-title"
-            const cardTitleElement = document.createElement('p');
-            cardTitleElement.className = 'card-title';
+            // send and read websocketMessage only if in the same conversation
+            if (parseInt(currentConversationId.textContent) === websocketMessage.conversation) {
+                const newMessageDiv = `
+                    <div class="alert alert-light p-1">
+                        <p class="card-title">
+                            <strong>${websocketMessage.sender.username}</strong>
+                            <small> - ${formatDate(websocketMessage.date)}</small>
+                        </p>
+                        <p class="card-text">${websocketMessage.content}</p>
+                    </div>
+                `
+                messagesContainer.innerHTML += newMessageDiv
 
-            // Create a new strong element and set its content to "title"
-            const strongElement = document.createElement('strong');
-            strongElement.textContent = message.sender.username;
+                // Scroll the container to the bottom on page load
+                const container = document.getElementById('messagesContainer');
+                container.scrollTop = container.scrollHeight;
 
-            // Create a new small element and set its content to " - subtitle"
-            const smallElement = document.createElement('small');
-            smallElement.textContent = ' - ' + formatDate(message.date);
+                // Clear the input
+                const content = document.getElementById("messageInput")
+                content.value = ''
+            }
+        } else if (websocketMessage.type === "CHANNEL") {
+            const channelUserList = document.getElementById("channelUserList")
+            const channelDiv = `
+                <input type="hidden" name="setCurrentConversationId" value="${websocketMessage.conversation}">
+                <button
+                        type="submit"
+                        class="btn list-group-item-action p-0 <%= buttonClass %>"
+                        name="setCurrentConversationId">
+                        ${websocketMessage.conversationLabel}
+                </button>
+            `
+            channelUserList.innerHTML += channelDiv
 
-            // Append the strong and small elements to the cardTitleElement
-            cardTitleElement.appendChild(strongElement);
-            cardTitleElement.appendChild(smallElement);
+            const closeChannelModalButton = document.getElementById("closeChannelModalButton");
+            closeChannelModalButton.click();
 
-            // Create a new p element with class "card-text" and set its content to "text"
-            const cardTextElement = document.createElement('p');
-            cardTextElement.className = 'card-text';
-            cardTextElement.textContent = message.content;
+            const channelSelectedUsers = document.querySelectorAll('input[name="channelSelectedUsers"]');
+            channelSelectedUsers.forEach(checkbox => {
+                checkbox.checked = false;
+            });
 
-            // Append the cardTitleElement and cardTextElement to the newDiv
-            newDiv.appendChild(cardTitleElement);
-            newDiv.appendChild(cardTextElement);
-
-            // Append the new div to the container
-            messagesContainer.appendChild(newDiv);
-
-            // Scroll the container to the bottom on page load
-            const container = document.getElementById('messagesContainer');
-            container.scrollTop = container.scrollHeight;
-
-            // Clear the input
-            const content = document.getElementById("messageInput")
-            content.value = ''
         }
     };
 }
@@ -69,16 +73,18 @@ function connect() {
 /**
  * Send message over websocket
  */
-function send() {
+function sendMessage() {
     const content = document.getElementById("messageInput").value;
     const conversation = parseInt(document.getElementById("currentConversationId").textContent);
 
-    const json = JSON.stringify({
-        "conversation": conversation,
-        "content": content
-    });
-
-    ws.send(json);
+    if (content.length > 0) {
+        const json = JSON.stringify({
+            "type": "MESSAGE",
+            "conversation": conversation,
+            "content": content
+        });
+        ws.send(json);
+    }
 }
 
 /**
@@ -87,7 +93,7 @@ function send() {
  */
 function runSendMessage(event) {
     if (event.keyCode === 13) {
-        send()
+        sendMessage()
     }
 }
 
@@ -105,4 +111,27 @@ function formatDate(date) {
     const minutes = String(dateTime.getMinutes()).padStart(2, '0');
 
     return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+function createChannel() {
+    const participations = []
+
+    const channelSelectedUsers = document.querySelectorAll('input[name="channelSelectedUsers"]');
+    channelSelectedUsers.forEach(function(checkbox) {
+        const isChecked = checkbox.checked;
+        const value = checkbox.value;
+
+        if (isChecked) {
+            participations.push(value)
+        }
+    });
+
+    if (participations.length > 0) {
+        const json = JSON.stringify({
+            "type": "CHANNEL",
+            "participations": participations,
+            "content": ""
+        });
+        ws.send(json);
+    }
 }

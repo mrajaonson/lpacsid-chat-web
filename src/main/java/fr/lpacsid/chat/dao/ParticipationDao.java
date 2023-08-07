@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ParticipationDao {
-    void createParticipation(Participation participation) throws SQLException;
+    Integer createParticipation(Participation participation) throws SQLException;
 
     Participation readParticipation(Integer conversation, Integer user) throws SQLException;
 

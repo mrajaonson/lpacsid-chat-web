@@ -90,7 +90,7 @@
                             </button>
                         </div>
                     </h6>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush" id="channelUserList">
                         <% for (Conversation conversation : userConversations) {
                             String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                             if (conversation.isChannel()) {
@@ -116,7 +116,7 @@
                             </button>
                         </div>
                     </h6>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush" id="groupUserList">
                         <% for (Conversation conversation : userConversations) {
                             String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                             if (conversation.isGroup()) {
@@ -144,7 +144,7 @@
                         </div>
                     </h6>
                     <%-- Liste des conversations --%>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush" id="discussionUserList">
                         <% for (Conversation conversation : userConversations) {
                                 String buttonClass = getCurrentConversation != null && Objects.equals(getCurrentConversation.getId(), conversation.getId()) ? "active" : "";
                                 if (conversation.isDiscussion()) {

@@ -3,10 +3,7 @@ package fr.lpacsid.chat.dao;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.utils.LoggerUtility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,11 +32,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void createUser(User user) throws SQLException {
+    public Integer createUser(User user) throws SQLException {
+        Integer insertedId = null;
         try {
             getConnection();
             String query = "INSERT INTO users(username, password, creationDate, status, lastConnection) VALUES(?, ?, ?, ?,?)";
-            this.preparedStatement = this.connection.prepareStatement(query);
+            this.preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             this.preparedStatement.setString(1, user.getUsername());
             this.preparedStatement.setString(2, user.getPassword());
@@ -47,18 +45,21 @@ public class UserDaoImpl implements UserDao {
             this.preparedStatement.setString(4, user.getStatusString());
             this.preparedStatement.setString(5, user.getLastConnection());
 
-            int rowAffected = this.preparedStatement.executeUpdate();
+            this.preparedStatement.executeUpdate();
 
-            if (rowAffected > 0) {
-                System.out.println("Users : insert " + rowAffected + " rows.");
-            } else {
-                System.out.println("Users : No rows inserted.");
+            ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                insertedId = generatedKeys.getInt(1);
+                LoggerUtility.logInsertQuery("USERS", insertedId);
             }
+
+            return insertedId;
         } catch (SQLException e) {
             LoggerUtility.logException(e);
         } finally {
             closeConnection();
         }
+        return insertedId;
     }
 
     @Override

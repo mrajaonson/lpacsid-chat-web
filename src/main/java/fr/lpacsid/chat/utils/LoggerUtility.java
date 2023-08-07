@@ -21,25 +21,11 @@ public class LoggerUtility {
 
     public static void logUpdateQuery(String table, int rowsAffected, int id) {
         String msg = table + " - UPDATE - ";
-        String rows;
         String msg2;
         if (rowsAffected > 0) {
             msg2 = " row id " + id + " updated successfully.";
         } else {
             msg2 = " row id " + id + " not found.";
-        }
-        log(Level.INFO, msg.concat(msg2), null);
-    }
-
-    public static void logInsertQuery(String table, int rowsAffected) {
-        String msg = table + " - INSERT - ";
-        String rows;
-        String msg2;
-        if (rowsAffected == 0) {
-            msg2 = " no row modified.";
-        } else {
-            rows = rowsAffected == 1 ? " row" : " rows";
-            msg2 = rowsAffected + " " + rows + " modified.";
         }
         log(Level.INFO, msg.concat(msg2), null);
     }
@@ -56,5 +42,10 @@ public class LoggerUtility {
             msg2 = "row id " + id + " not found.";
         }
         log(Level.INFO, msg.concat(msg2), null);
+    }
+
+    public static void logInsertQuery(String table, Integer id) {
+        String msg = "New " + table + " created successfully. Inserted ID is: " + id;
+        log(Level.INFO, msg, null);
     }
 }
