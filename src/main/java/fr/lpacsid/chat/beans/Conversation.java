@@ -135,7 +135,7 @@ public class Conversation {
             }
         } else if (this.isChannel() && this.label.isEmpty()) {
             this.label = ConversationTypes.CHANNEL.getFr() + " #" +this.id;
-        } else if (this.isChannel() && this.label.isEmpty()) {
+        } else if (this.isGroup() && this.label.isEmpty()) {
             this.label = ConversationTypes.GROUP.getFr() + " #" +this.id;
         }
     }
