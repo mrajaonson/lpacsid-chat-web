@@ -6,7 +6,7 @@ GRANT ALL PRIVILEGES ON `chat`.* TO 'chat'@'%';
 CREATE TABLE `chat`.`users` (
     `id` INT NOT NULL AUTO_INCREMENT ,
     `username` VARCHAR(50) NOT NULL ,
-    `password` VARCHAR(100) NOT NULL ,
+    `password` VARCHAR(200) NOT NULL ,
     `creationDate` VARCHAR(50) NOT NULL ,
     `status` VARCHAR(50) NOT NULL ,
     `lastConnection` VARCHAR(50) NOT NULL ,
@@ -16,7 +16,7 @@ CREATE TABLE `chat`.`users` (
 
 CREATE TABLE `chat`.`conversations` (
     `id` INT NOT NULL AUTO_INCREMENT ,
-    `prime` VARCHAR(50) NOT NULL ,
+    `prime` INT NOT NULL ,
     `creationDate` VARCHAR(50) NOT NULL ,
     `label` VARCHAR(50) NOT NULL ,
     `type` VARCHAR(50) NOT NULL ,
@@ -44,7 +44,7 @@ CREATE TABLE `chat`.`participations` (
 
 CREATE TABLE `chat`.`usernames` (
     `id` INT NOT NULL AUTO_INCREMENT ,
-    `username` VARCHAR(64) NOT NULL ,
+    `username` VARCHAR(50) NOT NULL ,
     PRIMARY KEY (`id`),
     UNIQUE `username` (`username`(50))
 ) ENGINE = InnoDB;
