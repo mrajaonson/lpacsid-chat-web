@@ -37,13 +37,14 @@ public class MessageDaoImpl implements MessageDao {
         Integer insertedId = null;
         try {
             this.getConnection();
-            String query = "INSERT INTO messages(conversation, sender, date, content) VALUES (?,?,?,?)";
+            String query = "INSERT INTO messages(conversation, sender, date, modification, content) VALUES (?,?,?,?,?)";
             this.preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             this.preparedStatement.setInt(1, message.getConversation());
             this.preparedStatement.setInt(2, message.getSender().getId());
             this.preparedStatement.setString(3, message.getDate());
-            this.preparedStatement.setString(4, message.getContent());
+            this.preparedStatement.setString(4, message.getModification());
+            this.preparedStatement.setString(5, message.getContent());
 
             this.preparedStatement.executeUpdate();
 
@@ -78,11 +79,12 @@ public class MessageDaoImpl implements MessageDao {
                 Integer conversation = resultSet.getInt("conversation");
                 Integer sender = resultSet.getInt("sender");
                 String date = resultSet.getString("date");
+                String modification = resultSet.getString("modification");
                 String content = resultSet.getString("content");
 
                 User user = userDao.readUserById(sender);
 
-                return new Message(conversation, user, date, content);
+                return new Message(conversation, user, date, modification, content);
             }
         } catch (SQLException e) {
             LoggerUtility.logException(e);
@@ -151,10 +153,11 @@ public class MessageDaoImpl implements MessageDao {
             while (resultSet.next()) {
                 Integer sender = resultSet.getInt("sender");
                 String date = resultSet.getString("date");
+                String modification = resultSet.getString("modification");
                 String content = resultSet.getString("content");
 
                 User user = userDao.readUserById(sender);
-                Message message = new Message(conversation, user, date, content);
+                Message message = new Message(conversation, user, date, modification, content);
 
                 messages.add(message);
             }
