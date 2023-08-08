@@ -20,8 +20,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ConversationServlet extends HttpServlet {
     private UserDao userDao;
@@ -154,8 +152,8 @@ public class ConversationServlet extends HttpServlet {
     private void createDiscussionPost() {
         String createDiscussionForm = request.getParameter("createDiscussion");
         if (createDiscussionForm != null) {
-            List<String> selectedParticipant = List.of(request.getParameter("selectedParticipant"));
-            createConversation(selectedParticipant, ConversationTypes.DISCUSSION);
+            List<String> discussionSelectedUsers = List.of(request.getParameter("discussionSelectedUsers"));
+            createConversation(discussionSelectedUsers, ConversationTypes.DISCUSSION);
             setUserConversationsInSession();
         }
     }
@@ -170,7 +168,7 @@ public class ConversationServlet extends HttpServlet {
             // Get conversation
             Conversation currentConversationObj = conversationDao.readConversation(currentConversationId);
             currentConversationObj.setMessages(currentConversationMessages);
-            currentConversationObj.setDiscussionLabel(this.user.getId());
+            currentConversationObj.setConversationLabel(this.user.getId());
 
             // Set current conversation to session
             session.setAttribute("currentConversation", currentConversationObj);

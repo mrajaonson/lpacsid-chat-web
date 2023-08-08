@@ -50,7 +50,7 @@ public class MessageDaoImpl implements MessageDao {
             ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
-                LoggerUtility.logInsertQuery("MESSAGES", insertedId);
+                LoggerUtility.logInsertQuery("MESSAGE", insertedId);
             }
 
             return insertedId;

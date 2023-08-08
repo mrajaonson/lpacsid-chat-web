@@ -123,7 +123,7 @@ public class Conversation {
         this.participations.add(participation);
     }
 
-    public void setDiscussionLabel(Integer userId) {
+    public void setConversationLabel(Integer userId) {
         if (this.isDiscussion()) {
             Participation participation = this.participations.stream()
                     .filter(i -> !Objects.equals(i.getUser().getId(), userId))

@@ -16,7 +16,6 @@
      aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-<%--      <form action="Conversation" method="POST">--%>
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="channelModalLabel">Créer un canal d'information</h1>
           <button type="button"
@@ -46,9 +45,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="submit" name="createChannel" onclick="createChannel()" class="btn btn-outline-primary">Ajouter</button>
+          <button type="submit" name="createChannel" onclick="createChannel()" class="btn btn-outline-primary">Créer</button>
         </div>
-<%--      </form>--%>
     </div>
   </div>
 </div>

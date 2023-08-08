@@ -44,8 +44,8 @@ public class LoggerUtility {
         log(Level.INFO, msg.concat(msg2), null);
     }
 
-    public static void logInsertQuery(String table, Integer id) {
-        String msg = "New " + table + " created successfully. Inserted ID is: " + id;
+    public static void logInsertQuery(String dataObject, Integer id) {
+        String msg = "New " + dataObject + " created successfully. Inserted ID is: " + id;
         log(Level.INFO, msg, null);
     }
 }

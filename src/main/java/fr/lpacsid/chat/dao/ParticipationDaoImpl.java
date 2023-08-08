@@ -52,7 +52,7 @@ public class ParticipationDaoImpl implements ParticipationDao {
             ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
-                LoggerUtility.logInsertQuery("PARTICIPATIONS", insertedId);
+                LoggerUtility.logInsertQuery("PARTICIPATION", insertedId);
             }
 
             return insertedId;

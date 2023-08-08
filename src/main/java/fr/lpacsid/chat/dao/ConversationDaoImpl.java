@@ -60,7 +60,7 @@ public class ConversationDaoImpl implements ConversationDao {
                 ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     insertedId = generatedKeys.getInt(1);
-                    LoggerUtility.logInsertQuery("CONVERSATIONS", insertedId);
+                    LoggerUtility.logInsertQuery("CONVERSATION", insertedId);
 
                     // Create participations
                     Integer conversationId = this.getConversationId(conversation);
@@ -159,7 +159,7 @@ public class ConversationDaoImpl implements ConversationDao {
             for (Integer conversationId : conversationsIdSender) {
                 Conversation conversation = this.readConversation(conversationId);
                 if (conversation != null) {
-                    conversation.setDiscussionLabel(userId);
+                    conversation.setConversationLabel(userId);
                     conversations.add(conversation);
                 }
             }

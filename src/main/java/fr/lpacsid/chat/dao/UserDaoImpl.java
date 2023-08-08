@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
             ResultSet generatedKeys = this.preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
-                LoggerUtility.logInsertQuery("USERS", insertedId);
+                LoggerUtility.logInsertQuery("USER", insertedId);
             }
 
             return insertedId;
@@ -118,7 +118,7 @@ public class UserDaoImpl implements UserDao {
     public boolean checkUsername(String username) throws SQLException {
         try {
             this.getConnection();
-            String query = "SELECT username FROM `users` WHERE username = ? UNION ALL SELECT username FROM `usernames` WHERE username = ? LIMIT 1;";
+            String query = "SELECT username FROM users WHERE username = ? UNION ALL SELECT username FROM usernames WHERE username = ? LIMIT 1;";
             this.preparedStatement = this.connection.prepareStatement(query);
 
             this.preparedStatement.setString(1, username);

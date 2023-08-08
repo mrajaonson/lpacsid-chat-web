@@ -2,7 +2,6 @@ package fr.lpacsid.chat.websocket;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -17,9 +16,9 @@ import fr.lpacsid.chat.dao.ConversationDao;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.MessageDao;
 import fr.lpacsid.chat.dao.UserDao;
-
 import fr.lpacsid.chat.enums.ConversationTypes;
 import fr.lpacsid.chat.utils.LoggerUtility;
+
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -65,18 +64,21 @@ public class ChatEndpoint {
                 // Persist
                 Message message = new Message(websocketMessage.getConversation(), websocketMessage.getSender(), websocketMessage.getContent());
                 this.messageDao.createMessage(message);
-            } else if (websocketMessage.getType().equals("CHANNEL")) {
-                Conversation conversation = new Conversation(websocketMessage.getSender(), ConversationTypes.CHANNEL);
-                conversation.setLabel("");
+            } else {
+                // Création de la conversation
+                Conversation conversation = createConversationFromType(websocketMessage);
+                // Ajout des participants
                 for (String participant : websocketMessage.getParticipations()) {
                     User userParticipant = userDao.readUserById(Integer.valueOf(participant));
                     conversation.addParticipant(userParticipant);
                 }
-                // Persist
-                Integer canalId = this.conversationDao.createConversation(conversation);
-                websocketMessage.setConversationLabel("Canal #" + canalId);
+                conversation.setConversationLabel(websocketMessage.getSender().getId());
+                // Persistence en base
+                Integer conversationId = this.conversationDao.createConversation(conversation);
+                // Mise à jour du websocket message
+                websocketMessage.setConversation(conversationId);
+                websocketMessage.setConversationLabel(conversation.getLabel());
             }
-
             broadcast(websocketMessage);
         } catch (Exception e) {
             LoggerUtility.logException(e);
@@ -105,4 +107,19 @@ public class ChatEndpoint {
         });
     }
 
+    private Conversation createConversationFromType(WebsocketMessage websocketMessage) {
+        ConversationTypes conversationTypes = null;
+        switch (websocketMessage.getType()) {
+            case "CHANNEL":
+                conversationTypes = ConversationTypes.CHANNEL;
+                break;
+            case "GROUP":
+                conversationTypes = ConversationTypes.GROUP;
+                break;
+            case "DISCUSSION":
+                conversationTypes = ConversationTypes.DISCUSSION;
+                break;
+        }
+        return new Conversation(websocketMessage.getSender(), conversationTypes);
+    }
 }

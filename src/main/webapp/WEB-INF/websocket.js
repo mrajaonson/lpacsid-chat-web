@@ -26,16 +26,7 @@ function connect() {
 
             // send and read websocketMessage only if in the same conversation
             if (parseInt(currentConversationId.textContent) === websocketMessage.conversation) {
-                const newMessageDiv = `
-                    <div class="alert alert-light p-1">
-                        <p class="card-title">
-                            <strong>${websocketMessage.sender.username}</strong>
-                            <small> - ${formatDate(websocketMessage.date)}</small>
-                        </p>
-                        <p class="card-text">${websocketMessage.content}</p>
-                    </div>
-                `
-                messagesContainer.innerHTML += newMessageDiv
+                messagesContainer.innerHTML += buildMessageDiv(websocketMessage)
 
                 // Scroll the container to the bottom on page load
                 const container = document.getElementById('messagesContainer');
@@ -47,16 +38,7 @@ function connect() {
             }
         } else if (websocketMessage.type === "CHANNEL") {
             const channelUserList = document.getElementById("channelUserList")
-            const channelDiv = `
-                <input type="hidden" name="setCurrentConversationId" value="${websocketMessage.conversation}">
-                <button
-                        type="submit"
-                        class="btn list-group-item-action p-0 <%= buttonClass %>"
-                        name="setCurrentConversationId">
-                        ${websocketMessage.conversationLabel}
-                </button>
-            `
-            channelUserList.innerHTML += channelDiv
+            channelUserList.innerHTML += buildDiscussionDiv(websocketMessage)
 
             const closeChannelModalButton = document.getElementById("closeChannelModalButton");
             closeChannelModalButton.click();
@@ -66,8 +48,64 @@ function connect() {
                 checkbox.checked = false;
             });
 
+        } else if (websocketMessage.type === "GROUP") {
+            const groupUserList = document.getElementById("groupUserList")
+            groupUserList.innerHTML += buildDiscussionDiv(websocketMessage)
+
+            const closeGroupModalButton = document.getElementById("closeGroupModalButton");
+            closeGroupModalButton.click();
+
+            const groupSelectedUsers = document.querySelectorAll('input[name="groupSelectedUsers"]');
+            groupSelectedUsers.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        } else if (websocketMessage.type === "DISCUSSION") {
+            const discussionUserList = document.getElementById("discussionUserList")
+            discussionUserList.innerHTML += buildDiscussionDiv(websocketMessage)
+
+            const closeDiscussionModalButton = document.getElementById("closeDiscussionModalButton");
+            closeDiscussionModalButton.click();
+
+            const discussionSelectedUsers = document.getElementById("discussionSelectedUsers");
+            discussionSelectedUsers.selectedIndex = 0
         }
     };
+}
+
+/**
+ * Création d'un composant dynamique 'message'
+ * @param websocketMessage
+ * @returns {string}
+ */
+function buildMessageDiv(websocketMessage) {
+    return `
+        <div class="alert alert-light p-1">
+            <p class="card-title">
+                <strong>${websocketMessage.sender.username}</strong>
+                <small> - ${formatDate(websocketMessage.date)}</small>
+            </p>
+            <p class="card-text">${websocketMessage.content}</p>
+        </div>
+    `
+}
+
+/**
+ * Création d'un composant dynamique 'discussion'
+ * @param websocketMessage
+ * @returns {string}
+ */
+function buildDiscussionDiv(websocketMessage) {
+    return `
+        <form action="Conversation" method="post" id="${websocketMessage.conversation}">
+            <input type="hidden" name="setCurrentConversationId" value="${websocketMessage.conversation}">
+            <button
+                type="submit"
+                class="btn list-group-item-action p-0 <%= buttonClass %>"
+                name="setCurrentConversationId">
+            ${websocketMessage.conversationLabel}
+            </button>
+        </form>
+    `
 }
 
 /**
@@ -115,7 +153,6 @@ function formatDate(date) {
 
 function createChannel() {
     const participations = []
-
     const channelSelectedUsers = document.querySelectorAll('input[name="channelSelectedUsers"]');
     channelSelectedUsers.forEach(function(checkbox) {
         const isChecked = checkbox.checked;
@@ -125,10 +162,44 @@ function createChannel() {
             participations.push(value)
         }
     });
-
     if (participations.length > 0) {
         const json = JSON.stringify({
             "type": "CHANNEL",
+            "participations": participations,
+            "content": ""
+        });
+        ws.send(json);
+    }
+}
+
+function createGroup() {
+    const participations = []
+    const groupSelectedUsers = document.querySelectorAll('input[name="groupSelectedUsers"]');
+    groupSelectedUsers.forEach(function(checkbox) {
+        const isChecked = checkbox.checked;
+        const value = checkbox.value;
+        if (isChecked) {
+            participations.push(value)
+        }
+    });
+    if (participations.length > 0) {
+        const json = JSON.stringify({
+            "type": "GROUP",
+            "participations": participations,
+            "content": ""
+        });
+        ws.send(json);
+    }
+}
+
+function createDiscussion() {
+    const participations = []
+    const discussionSelectedUsers = document.getElementById("discussionSelectedUsers");
+    participations.push(discussionSelectedUsers.options[discussionSelectedUsers.selectedIndex].value)
+
+    if (participations.length > 0) {
+        const json = JSON.stringify({
+            "type": "DISCUSSION",
             "participations": participations,
             "content": ""
         });
