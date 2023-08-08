@@ -3,6 +3,7 @@ package fr.lpacsid.chat.servlets;
 import fr.lpacsid.chat.beans.User;
 import fr.lpacsid.chat.dao.DaoFactory;
 import fr.lpacsid.chat.dao.UserDao;
+import fr.lpacsid.chat.utils.LoggerUtility;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -73,7 +74,7 @@ public class Signup extends HttpServlet {
             } catch (SQLException e) {
                 request.setAttribute("errorSignup", "Erreur lors de la création du compte");
                 dispatcher = context.getRequestDispatcher("/WEB-INF/signup.jsp");
-                Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, e);
+                LoggerUtility.logException(e);
             }
         }
 

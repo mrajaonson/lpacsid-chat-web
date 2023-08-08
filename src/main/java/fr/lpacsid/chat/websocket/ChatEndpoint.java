@@ -101,7 +101,7 @@ public class ChatEndpoint {
                 try {
                     endpoint.session.getBasicRemote().sendObject(websocketMessage);
                 } catch (IOException | EncodeException e) {
-                    Logger.getLogger(ChatEndpoint.class.getName()).log(Level.SEVERE, null, e);
+                    LoggerUtility.logException(e);
                 }
             }
         });

@@ -2,10 +2,7 @@ package fr.lpacsid.chat.beans;
 
 import fr.lpacsid.chat.enums.UserStatus;
 import fr.lpacsid.chat.utils.DateUtility;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import fr.lpacsid.chat.utils.LoggerUtility;
 
 public class User {
     private Integer id;
@@ -60,7 +57,7 @@ public class User {
             this.status = UserStatus.valueOf(status);
         } catch (IllegalArgumentException e) {
             this.status = UserStatus.OFFLINE;
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, e);
+            LoggerUtility.logException(e);
         }
     }
 
