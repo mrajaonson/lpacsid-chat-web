@@ -111,6 +111,7 @@ public class Conversation {
         this.initCreationDate();
         this.addModerator(prime);
         this.type = type;
+        this.label = "";
     }
 
     public void addParticipant(User user) {

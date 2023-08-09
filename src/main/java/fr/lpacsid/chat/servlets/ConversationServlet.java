@@ -123,7 +123,6 @@ public class ConversationServlet extends HttpServlet {
                     User userParticipant = userDao.readUserById(Integer.valueOf(userId));
                     conversation.addParticipant(userParticipant);
                 }
-                conversation.setLabel("");
                 conversationDao.createConversation(conversation);
             }
         } catch (SQLException e) {

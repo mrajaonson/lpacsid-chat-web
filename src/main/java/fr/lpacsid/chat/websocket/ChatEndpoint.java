@@ -72,7 +72,6 @@ public class ChatEndpoint {
                     User userParticipant = userDao.readUserById(Integer.valueOf(participant));
                     conversation.addParticipant(userParticipant);
                 }
-                conversation.setLabel("");
                 // Persistence en base
                 Integer conversationId = this.conversationDao.createConversation(conversation);
                 conversation.setId(conversationId);
