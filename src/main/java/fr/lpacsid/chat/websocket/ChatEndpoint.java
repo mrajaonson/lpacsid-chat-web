@@ -72,9 +72,11 @@ public class ChatEndpoint {
                     User userParticipant = userDao.readUserById(Integer.valueOf(participant));
                     conversation.addParticipant(userParticipant);
                 }
-                conversation.setConversationLabel(websocketMessage.getSender().getId());
+                conversation.setLabel("");
                 // Persistence en base
                 Integer conversationId = this.conversationDao.createConversation(conversation);
+                conversation.setId(conversationId);
+                conversation.setConversationLabel(websocketMessage.getSender().getId());
                 // Mise à jour du websocket message
                 websocketMessage.setConversation(conversationId);
                 websocketMessage.setConversationLabel(conversation.getLabel());

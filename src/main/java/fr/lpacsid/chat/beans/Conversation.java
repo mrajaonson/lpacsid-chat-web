@@ -124,18 +124,18 @@ public class Conversation {
     }
 
     public void setConversationLabel(Integer userId) {
+        boolean labeled = this.label != null && !this.label.isEmpty();
         if (this.isDiscussion()) {
             Participation participation = this.participations.stream()
                     .filter(i -> !Objects.equals(i.getUser().getId(), userId))
                     .findFirst()
                     .orElse(null);
-
             if (participation != null) {
                 this.label = participation.getUser().getUsername();
             }
-        } else if (this.isChannel() && this.label.isEmpty()) {
+        } else if (this.isChannel() && !labeled) {
             this.label = ConversationTypes.CHANNEL.getFr() + " #" +this.id;
-        } else if (this.isGroup() && this.label.isEmpty()) {
+        } else if (this.isGroup() && !labeled) {
             this.label = ConversationTypes.GROUP.getFr() + " #" +this.id;
         }
     }
