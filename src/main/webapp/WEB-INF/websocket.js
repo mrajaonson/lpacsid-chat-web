@@ -36,38 +36,24 @@ function connect() {
                 const content = document.getElementById("messageInput")
                 content.value = ''
             }
-        } else if (websocketMessage.type === "CHANNEL") {
-            const channelUserList = document.getElementById("channelUserList")
-            channelUserList.innerHTML += buildDiscussionDiv(websocketMessage)
-
-            const closeChannelModalButton = document.getElementById("closeChannelModalButton");
-            closeChannelModalButton.click();
-
-            const channelSelectedUsers = document.querySelectorAll('input[name="channelSelectedUsers"]');
-            channelSelectedUsers.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-
-        } else if (websocketMessage.type === "GROUP") {
-            const groupUserList = document.getElementById("groupUserList")
-            groupUserList.innerHTML += buildDiscussionDiv(websocketMessage)
-
-            const closeGroupModalButton = document.getElementById("closeGroupModalButton");
-            closeGroupModalButton.click();
-
-            const groupSelectedUsers = document.querySelectorAll('input[name="groupSelectedUsers"]');
-            groupSelectedUsers.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-        } else if (websocketMessage.type === "DISCUSSION") {
-            const discussionUserList = document.getElementById("discussionUserList")
-            discussionUserList.innerHTML += buildDiscussionDiv(websocketMessage)
-
-            const closeDiscussionModalButton = document.getElementById("closeDiscussionModalButton");
-            closeDiscussionModalButton.click();
-
-            const discussionSelectedUsers = document.getElementById("discussionSelectedUsers");
-            discussionSelectedUsers.selectedIndex = 0
+        } else {
+            switch (websocketMessage.type) {
+                case 'CHANNEL':
+                    addConversationElement('channelUserList')
+                    closeConversationModalElement('closeChannelModalButton')
+                    uncheckConversationModalElements('channelSelectedUsers')
+                    break
+                case 'GROUP':
+                    addConversationElement('groupUserList')
+                    closeConversationModalElement('closeGroupModalButton')
+                    uncheckConversationModalElements('groupSelectedUsers')
+                    break
+                case 'DISCUSSION':
+                    addConversationElement('discussionUserList')
+                    closeConversationModalElement('closeDiscussionModalButton')
+                    unselectDiscussionUserElement('discussionSelectedUsers')
+                    break
+            }
         }
     };
 }
@@ -106,6 +92,28 @@ function buildDiscussionDiv(websocketMessage) {
             </button>
         </form>
     `
+}
+
+function addConversationElement(conversationsList) {
+    const conversationsListEl = document.getElementById(conversationsList)
+    conversationsListEl.innerHTML += buildDiscussionDiv(websocketMessage)
+}
+
+function closeConversationModalElement(closeModalButton) {
+    const closeModalButtonEl = document.getElementById(closeModalButton)
+    closeModalButtonEl.click()
+}
+
+function uncheckConversationModalElements(selectedUsers) {
+    const selectedUsersEl = document.querySelectorAll(`input[name=${selectedUsers}]`);
+    selectedUsersEl.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+
+function unselectDiscussionUserElement(selectedUsers) {
+    const discussionSelectedUsers = document.getElementById(selectedUsers);
+    discussionSelectedUsers.selectedIndex = 0
 }
 
 /**
