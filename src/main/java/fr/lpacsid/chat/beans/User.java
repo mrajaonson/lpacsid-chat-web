@@ -108,4 +108,12 @@ public class User {
         this.setStatusFromStringValue(status);
         this.lastConnection = lastConnection;
     }
+
+    public void setStatusAvailable() {
+        this.status = UserStatus.AVAILABLE;
+    }
+
+    public void setStatusOffline() {
+        this.status = UserStatus.OFFLINE;
+    }
 }

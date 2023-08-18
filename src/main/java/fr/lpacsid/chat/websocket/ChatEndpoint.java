@@ -49,6 +49,8 @@ public class ChatEndpoint {
         chatEndpoints.add(this);
 
         User user = this.userDao.readUser(username);
+        user.setStatusAvailable();
+        this.userDao.updateUser(user);
         users.put(session.getId(), user);
     }
 
@@ -85,7 +87,11 @@ public class ChatEndpoint {
     }
 
     @OnClose
-    public void onClose(Session session) throws IOException, EncodeException {
+    public void onClose(Session session) throws IOException, EncodeException, SQLException {
+        User user = users.get(session.getId());
+        user.setStatusOffline();
+        userDao.updateUser(user);
+        users.remove(session.getId());
         chatEndpoints.remove(this);
     }
 

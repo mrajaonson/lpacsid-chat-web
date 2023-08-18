@@ -20,19 +20,21 @@ function connect() {
         const websocketMessage = JSON.parse(event.data);
         const currentConversationId = document.getElementById("currentConversationId");
 
+        console.log("websocketMessage.type", websocketMessage.type)
+
         switch (websocketMessage.type) {
             case 'CHANNEL':
-                addConversationElement('channelUserList')
+                addConversationElement('channelUserList', websocketMessage)
                 closeConversationModalElement('closeChannelModalButton')
                 uncheckConversationModalElements('channelSelectedUsers')
                 break
             case 'GROUP':
-                addConversationElement('groupUserList')
+                addConversationElement('groupUserList', websocketMessage)
                 closeConversationModalElement('closeGroupModalButton')
                 uncheckConversationModalElements('groupSelectedUsers')
                 break
             case 'DISCUSSION':
-                addConversationElement('discussionUserList')
+                addConversationElement('discussionUserList', websocketMessage)
                 closeConversationModalElement('closeDiscussionModalButton')
                 unselectDiscussionUserElement('discussionSelectedUsers')
                 break
@@ -89,7 +91,7 @@ function buildDiscussionDiv(websocketMessage) {
     `
 }
 
-function addConversationElement(conversationsList) {
+function addConversationElement(conversationsList, websocketMessage) {
     const conversationsListEl = document.getElementById(conversationsList)
     conversationsListEl.innerHTML += buildDiscussionDiv(websocketMessage)
 }
