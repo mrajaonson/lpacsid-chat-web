@@ -59,12 +59,12 @@ public class ChatEndpoint {
             websocketMessage.initDate();
 
             if (websocketMessage.getType().equals("MESSAGE")) {
-                // Persist
+                // Persistence en base du message
                 Message message = new Message(websocketMessage.getConversation(), websocketMessage.getSender(), websocketMessage.getContent());
                 this.messageDao.createMessage(message);
             } else {
                 // Création de la conversation
-                Conversation conversation = createConversationFromType(websocketMessage);
+                Conversation conversation = new Conversation(websocketMessage.getSender(), websocketMessage.getConversationTypesFromTypeString());
                 // Ajout des participants
                 for (String participant : websocketMessage.getParticipations()) {
                     User userParticipant = userDao.readUserById(Integer.valueOf(participant));
@@ -104,21 +104,5 @@ public class ChatEndpoint {
                 }
             }
         });
-    }
-
-    private Conversation createConversationFromType(WebsocketMessage websocketMessage) {
-        ConversationTypes conversationTypes = null;
-        switch (websocketMessage.getType()) {
-            case "CHANNEL":
-                conversationTypes = ConversationTypes.CHANNEL;
-                break;
-            case "GROUP":
-                conversationTypes = ConversationTypes.GROUP;
-                break;
-            case "DISCUSSION":
-                conversationTypes = ConversationTypes.DISCUSSION;
-                break;
-        }
-        return new Conversation(websocketMessage.getSender(), conversationTypes);
     }
 }

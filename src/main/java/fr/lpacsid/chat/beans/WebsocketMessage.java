@@ -1,5 +1,6 @@
 package fr.lpacsid.chat.beans;
 
+import fr.lpacsid.chat.enums.ConversationTypes;
 import fr.lpacsid.chat.utils.DateUtility;
 
 public class WebsocketMessage {
@@ -69,5 +70,9 @@ public class WebsocketMessage {
 
     public void setConversationLabel(String conversationLabel) {
         this.conversationLabel = conversationLabel;
+    }
+
+    public ConversationTypes getConversationTypesFromTypeString () {
+        return ConversationTypes.valueOf(this.type);
     }
 }
