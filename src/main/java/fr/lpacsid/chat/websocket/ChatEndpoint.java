@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import fr.lpacsid.chat.beans.Conversation;
 import fr.lpacsid.chat.beans.User;

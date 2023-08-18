@@ -20,40 +20,35 @@ function connect() {
         const websocketMessage = JSON.parse(event.data);
         const currentConversationId = document.getElementById("currentConversationId");
 
-        // Message
-        if (websocketMessage.type === "MESSAGE") {
-            const messagesContainer = document.getElementById("messagesContainer");
-
-            // send and read websocketMessage only if in the same conversation
-            if (parseInt(currentConversationId.textContent) === websocketMessage.conversation) {
-                messagesContainer.innerHTML += buildMessageDiv(websocketMessage)
-
-                // Scroll the container to the bottom on page load
-                const container = document.getElementById('messagesContainer');
-                container.scrollTop = container.scrollHeight;
-
-                // Clear the input
-                const content = document.getElementById("messageInput")
-                content.value = ''
-            }
-        } else {
-            switch (websocketMessage.type) {
-                case 'CHANNEL':
-                    addConversationElement('channelUserList')
-                    closeConversationModalElement('closeChannelModalButton')
-                    uncheckConversationModalElements('channelSelectedUsers')
-                    break
-                case 'GROUP':
-                    addConversationElement('groupUserList')
-                    closeConversationModalElement('closeGroupModalButton')
-                    uncheckConversationModalElements('groupSelectedUsers')
-                    break
-                case 'DISCUSSION':
-                    addConversationElement('discussionUserList')
-                    closeConversationModalElement('closeDiscussionModalButton')
-                    unselectDiscussionUserElement('discussionSelectedUsers')
-                    break
-            }
+        switch (websocketMessage.type) {
+            case 'CHANNEL':
+                addConversationElement('channelUserList')
+                closeConversationModalElement('closeChannelModalButton')
+                uncheckConversationModalElements('channelSelectedUsers')
+                break
+            case 'GROUP':
+                addConversationElement('groupUserList')
+                closeConversationModalElement('closeGroupModalButton')
+                uncheckConversationModalElements('groupSelectedUsers')
+                break
+            case 'DISCUSSION':
+                addConversationElement('discussionUserList')
+                closeConversationModalElement('closeDiscussionModalButton')
+                unselectDiscussionUserElement('discussionSelectedUsers')
+                break
+            case 'MESSAGE':
+                const messagesContainer = document.getElementById("messagesContainer");
+                // send and read websocketMessage only if in the same conversation
+                if (parseInt(currentConversationId.textContent) === websocketMessage.conversation) {
+                    messagesContainer.innerHTML += buildMessageDiv(websocketMessage)
+                    // Scroll the container to the bottom on page load
+                    const container = document.getElementById('messagesContainer');
+                    container.scrollTop = container.scrollHeight;
+                    // Clear the input
+                    const content = document.getElementById("messageInput")
+                    content.value = ''
+                }
+                break
         }
     };
 }
